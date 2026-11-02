@@ -1,0 +1,4181 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>四年級南一數期中複習大富翁｜中正國小專用</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎲</text></svg>">
+  <style>
+    :root {
+      --p1-color: #ef4444;
+      --p1-light: #fee2e2;
+      --p1-dark: #b91c1c;
+      --p2-color: #3b82f6;
+      --p2-light: #dbeafe;
+      --p2-dark: #1d4ed8;
+      --gold: #f59e0b;
+      --gold-light: #fef3c7;
+      --board-bg: #f8fafc;
+      --text-main: #1e293b;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      width: 100vw;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang TC", "Noto Sans TC", sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: var(--text-main);
+      width: 100vw;
+      height: 100vh;
+      max-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: space-between;
+      padding: 6px 14px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    /* 頂部全域計時與控制列 - 2倍放大字體 */
+    header {
+      width: 100%;
+      max-width: 100%;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 8px 20px;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      margin-bottom: 6px;
+      border: 2px solid #e2e8f0;
+      box-sizing: border-box;
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-title h1 {
+      font-size: 28px;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .badge {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .timer-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f1f5f9;
+      padding: 6px 22px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 32px;
+      color: #334155;
+      letter-spacing: 1px;
+      border: 2.5px solid #cbd5e1;
+      transition: all 0.3s;
+    }
+
+    .timer-container.urgent {
+      background: #fee2e2;
+      color: #b91c1c;
+      border-color: #ef4444;
+      animation: pulse-red 1s infinite alternate;
+    }
+
+    @keyframes pulse-red {
+      from { transform: scale(1); box-shadow: 0 0 0px #ef4444; }
+      to { transform: scale(1.05); box-shadow: 0 0 12px rgba(239, 68, 68, 0.6); }
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 8px 16px;
+      font-size: 19px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .icon-btn:hover {
+      background: #e2e8f0;
+      transform: translateY(-1px);
+    }
+
+    /* 遊戲主舞台 - 16:9 比例滿版 */
+    main {
+      width: 100%;
+      max-width: 100%;
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(300px, 340px) 1fr minmax(300px, 340px);
+      gap: 12px;
+      align-items: stretch;
+      min-height: 0;
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 1200px) {
+      main {
+        grid-template-columns: 280px 1fr 280px;
+        gap: 10px;
+      }
+    }
+
+    /* 玩家資訊面板卡片 - 2倍放大字體 */
+    .player-panel {
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 18px;
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+      border: 3.5px solid transparent;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+      height: 100%;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+
+    .player-panel.active-p1 {
+      border-color: var(--p1-color);
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.35);
+      transform: scale(1.01);
+    }
+
+    .player-panel.active-p2 {
+      border-color: var(--p2-color);
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.35);
+      transform: scale(1.01);
+    }
+
+    .player-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: white;
+      font-weight: 900;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      border: 3px solid white;
+      background: #f1f5f9;
+      flex-shrink: 0;
+    }
+
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .avatar-p1 { background: linear-gradient(135deg, #f87171, #dc2626); }
+    .avatar-p2 { background: linear-gradient(135deg, #60a5fa, #2563eb); }
+
+    .player-title {
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .player-seat {
+      font-size: 20px;
+      color: #475569;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 800;
+      border: 1.5px solid #e2e8f0;
+    }
+
+    .stat-val {
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .gold-val { color: #d97706; font-size: 30px; }
+    .lap-val { color: #0284c7; }
+
+    .lands-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      min-height: 48px;
+      background: #f1f5f9;
+      padding: 8px;
+      border-radius: 12px;
+    }
+
+    .land-chip {
+      font-size: 18px;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-weight: 800;
+      color: white;
+    }
+
+    .chip-p1 { background: var(--p1-color); }
+    .chip-p2 { background: var(--p2-color); }
+
+    /* 中央環形大富翁棋盤 - 讓整個中央都是棋盤，無任何上下多餘留白 */
+    .board-container {
+      background: white;
+      border-radius: 18px;
+      padding: 6px;
+      box-shadow: var(--shadow);
+      position: relative;
+      border: 3.5px solid #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: stretch;
+      width: 100%;
+      height: 100%;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .board-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      grid-template-rows: repeat(5, 1fr);
+      gap: 6px;
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    .tile {
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      border-radius: 11px;
+      padding: 3px 5px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      font-size: 18px;
+      font-weight: 900;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.06);
+      transition: all 0.2s;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .tile.active-highlight {
+      border-color: #f59e0b;
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.95);
+      transform: scale(1.03);
+      z-index: 5;
+    }
+
+    .tile.owned-p1 {
+      border-color: var(--p1-color);
+      background: var(--p1-light);
+    }
+
+    .tile.owned-p2 {
+      border-color: var(--p2-color);
+      background: var(--p2-light);
+    }
+
+    .flag-pin {
+      position: absolute;
+      top: -3px;
+      right: -1px;
+      font-size: 28px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
+    }
+
+    .tile-tag {
+      font-size: clamp(12px, 0.95vw, 15px);
+      padding: 2px 7px;
+      border-radius: 5px;
+      background: #e2e8f0;
+      color: #1e293b;
+      white-space: nowrap;
+      font-weight: 900;
+    }
+
+    .tag-ch1 { background: #fee2e2; color: #991b1b; }
+    .tag-ch2 { background: #fed7aa; color: #9a3412; }
+    .tag-ch3 { background: #fef08a; color: #854d0e; }
+    .tag-ch4 { background: #dcfce7; color: #166534; }
+    .tag-ch5 { background: #e0e7ff; color: #3730a3; }
+    .tag-special { background: #f3e8ff; color: #6b21a8; }
+
+    .tile-thumb {
+      width: clamp(26px, 2.5vw, 42px);
+      height: clamp(26px, 2.5vw, 42px);
+      border-radius: 7px;
+      object-fit: cover;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.16);
+      border: 1.5px solid rgba(255,255,255,0.9);
+      margin: 1px 0;
+    }
+
+    .tile-name {
+      font-size: clamp(15px, 1.2vw, 20px);
+      font-weight: 900;
+      color: #0f172a;
+      line-height: 1.15;
+      margin: 1px 0;
+    }
+
+    .tile-price {
+      font-size: clamp(13px, 1.0vw, 17px);
+      color: #b45309;
+      font-weight: 900;
+    }
+
+    /* 棋子樣式 */
+    .piece-container {
+      display: flex;
+      gap: 3px;
+      position: absolute;
+      bottom: 2px;
+      z-index: 10;
+    }
+
+    .piece {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2.5px solid white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .piece-p1 { background: var(--p1-color); }
+    .piece-p2 { background: var(--p2-color); }
+
+    /* 棋盤中央控制核心 - 滿版豐富儀表板（2倍放大字體） */
+    .board-center {
+      grid-column: 2 / 7;
+      grid-row: 2 / 5;
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border-radius: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border: 2.5px solid #cbd5e1;
+      text-align: center;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.03), 0 4px 14px rgba(0,0,0,0.06);
+      position: relative;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    /* 頂部即時對峙資訊列 */
+    .center-top-bar {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 3px;
+    }
+
+    .center-team-card {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 10px;
+      border: 1.5px solid #e2e8f0;
+      background: white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .center-team-card.team-p1 {
+      border-color: #fca5a5;
+      background: #fff5f5;
+    }
+
+    .center-team-card.team-p2 {
+      border-color: #93c5fd;
+      background: #f0f7ff;
+    }
+
+    .center-team-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1.5px solid white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    .center-team-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+
+    .center-team-name {
+      font-size: 18px;
+      font-weight: 900;
+      color: #1e293b;
+    }
+
+    .center-team-stats {
+      font-size: 16px;
+      font-weight: 800;
+      color: #475569;
+    }
+
+    .turn-announcer {
+      font-size: 22px;
+      font-weight: 900;
+      padding: 5px 18px;
+      border-radius: 999px;
+      color: white;
+      animation: bounce 0.6s infinite alternate;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-3px); }
+    }
+
+    .turn-p1 { background: var(--p1-color); box-shadow: 0 3px 8px rgba(239, 68, 68, 0.4); }
+    .turn-p2 { background: var(--p2-color); box-shadow: 0 3px 8px rgba(59, 130, 246, 0.4); }
+
+    .turn-avatar-badge {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* 中部三欄儀表板網格 */
+    .center-main-grid {
+      width: 100%;
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr 1.1fr;
+      gap: 8px;
+      align-items: stretch;
+      min-height: 0;
+      margin-bottom: 3px;
+    }
+
+    .center-panel-box {
+      background: white;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .center-box-title {
+      font-size: 16px;
+      font-weight: 900;
+      color: #334155;
+      background: #f1f5f9;
+      padding: 2px 10px;
+      border-radius: 999px;
+      margin-bottom: 2px;
+    }
+
+    .board-hero-card {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+      border: 2px solid white;
+      cursor: pointer;
+    }
+
+    .board-hero-card:hover .board-hero-img {
+      transform: scale(1.06);
+    }
+
+    .unit-badges-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 4px;
+      width: 100%;
+    }
+
+    .unit-badge-pill {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-size: 15px;
+      font-weight: 800;
+      color: #334155;
+      transition: all 0.2s;
+    }
+
+    .unit-badge-pill.conquered-p1 {
+      border-color: var(--p1-color);
+      background: #fee2e2;
+      color: #991b1b;
+      font-weight: 900;
+    }
+
+    .unit-badge-pill.conquered-p2 {
+      border-color: var(--p2-color);
+      background: #dbeafe;
+      color: #1e40af;
+      font-weight: 900;
+    }
+
+    .mini-unit-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      object-fit: cover;
+    }
+
+    /* 骰子控制中欄 */
+    .center-dice-box {
+      background: linear-gradient(135deg, #ffffff 0%, #fefce8 100%);
+      border-color: #fde047;
+    }
+
+    .dice-btn {
+      width: clamp(74px, 6vw, 92px);
+      height: clamp(74px, 6vw, 92px);
+      background: white;
+      border-radius: 20px;
+      border: 4px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(48px, 4vw, 62px);
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.14), inset 0 -4px 0 #cbd5e1;
+      transition: all 0.15s;
+    }
+
+    .dice-btn:hover:not(:disabled) {
+      transform: translateY(-2px) scale(1.05);
+      border-color: #f59e0b;
+    }
+
+    .dice-btn:active:not(:disabled) {
+      transform: translateY(2px);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .dice-history-pill {
+      font-size: 17px;
+      font-weight: 900;
+      color: #92400e;
+      background: #fef3c7;
+      border: 1.5px solid #fde68a;
+      padding: 3px 12px;
+      border-radius: 999px;
+      margin-top: 2px;
+    }
+
+    .action-hint {
+      margin-top: 2px;
+      font-size: 19px;
+      font-weight: 800;
+      color: #475569;
+    }
+
+    .rule-quick-tag {
+      font-size: 15px;
+      font-weight: 800;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-top: 2px;
+      white-space: nowrap;
+    }
+
+    /* 課本任務情報右欄 */
+    .book-radar-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      justify-content: space-around;
+      height: 100%;
+    }
+
+    .radar-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 2px 6px;
+    }
+
+    .radar-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .radar-text {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      line-height: 1.15;
+      font-size: 16px;
+      font-weight: 800;
+      color: #1e293b;
+    }
+
+    .radar-text small {
+      color: #64748b;
+      font-size: 13.5px;
+      font-weight: 700;
+    }
+
+    /* 底部賽程進度里程碑 */
+    .center-bottom-bar {
+      width: 100%;
+      background: #f1f5f9;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 3px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+    }
+
+    .round-track-label {
+      font-size: 16px;
+      font-weight: 900;
+      color: #1e293b;
+    }
+
+    .round-milestones {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .milestone-step {
+      font-size: 15px;
+      font-weight: 800;
+      color: #64748b;
+      background: white;
+      border: 1px solid #cbd5e1;
+      padding: 2px 8px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+
+    .milestone-step.active-step {
+      background: #dcfce7;
+      border-color: #22c55e;
+      color: #15803d;
+      font-weight: 900;
+    }
+
+    .step-num {
+      background: #e2e8f0;
+      color: #334155;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .active-step .step-num {
+      background: #16a34a;
+      color: white;
+    }
+
+    .step-arrow {
+      color: #94a3b8;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    /* 彈跳視窗（題目、結算、排行榜、開局設定） - 2倍放大字體 */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 14px;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-card {
+      background: white;
+      border-radius: 28px;
+      width: 100%;
+      max-width: 860px;
+      box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.35);
+      border: 4px solid #cbd5e1;
+      padding: 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.92); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2.5px solid #f1f5f9;
+      padding-bottom: 12px;
+    }
+
+    .modal-title {
+      font-size: 27px;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* 課本指示橫幅 - 2倍特大字體 38px */
+    .book-banner {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      border: 2.5px solid #f59e0b;
+      border-radius: 18px;
+      padding: 16px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .book-target {
+      font-size: 30px;
+      font-weight: 900;
+      color: #92400e;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .role-dispatch {
+      display: flex;
+      justify-content: space-between;
+      font-size: 22px;
+      font-weight: 800;
+      color: #78350f;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 8px 16px;
+      border-radius: 12px;
+    }
+
+    /* 答題倒數條 */
+    .question-timer-bar {
+      width: 100%;
+      height: 14px;
+      background: #e2e8f0;
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .question-timer-progress {
+      height: 100%;
+      background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
+      width: 100%;
+      transition: width 1s linear;
+    }
+
+    .question-box {
+      background: #f8fafc;
+      border: 2.5px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 20px;
+      font-size: 30px;
+      font-weight: 900;
+      line-height: 1.6;
+      color: #0f172a;
+    }
+
+    /* 4 個大尺寸觸控作答按鈕 - 2倍放大字體 26px */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 650px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .opt-btn {
+      background: #f1f5f9;
+      border: 2.5px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 16px 20px;
+      font-size: 26px;
+      font-weight: 800;
+      color: #1e293b;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .opt-btn:hover {
+      background: #e2e8f0;
+      border-color: #94a3b8;
+      transform: translateY(-2px);
+    }
+
+    .opt-btn:active {
+      transform: translateY(1px);
+    }
+
+    .opt-key {
+      background: #cbd5e1;
+      color: #334155;
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    /* 迷思診斷回饋視窗內容 */
+    .feedback-box {
+      padding: 16px;
+      border-radius: 16px;
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.6;
+      margin-top: 8px;
+    }
+
+    .feedback-success {
+      background: #dcfce7;
+      border: 2.5px solid #22c55e;
+      color: #15803d;
+    }
+
+    .feedback-error {
+      background: #fee2e2;
+      border: 2.5px solid #ef4444;
+      color: #b91c1c;
+    }
+
+    /* 大按鈕 */
+    .primary-btn {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: white;
+      border: none;
+      padding: 16px 32px;
+      border-radius: 18px;
+      font-size: 26px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(217, 119, 6, 0.35);
+      transition: all 0.2s;
+      width: 100%;
+      text-align: center;
+    }
+
+    .primary-btn:hover {
+      filter: brightness(1.08);
+      transform: translateY(-2px);
+    }
+
+    /* 開局選號介面 */
+    .setup-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .setup-player-card {
+      background: #f8fafc;
+      border: 2.5px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .setup-player-card.p1-border { border-color: var(--p1-color); }
+    .setup-player-card.p2-border { border-color: var(--p2-color); }
+
+    .seat-select {
+      width: 100%;
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: 2.5px solid #cbd5e1;
+      font-size: 24px;
+      font-weight: 800;
+      background: white;
+      cursor: pointer;
+    }
+
+    /* 歷史戰績排行榜表格 */
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 22px;
+      margin-top: 12px;
+    }
+
+    .leaderboard-table th, .leaderboard-table td {
+      padding: 12px 10px;
+      text-align: center;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .leaderboard-table th {
+      background: #f1f5f9;
+      font-weight: 900;
+      color: #334155;
+    }
+
+    /* 裁判監督審查區 */
+    .referee-box {
+      background: #eff6ff;
+      border: 3px solid #3b82f6;
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+      animation: popIn 0.3s ease-out;
+    }
+
+    .referee-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .referee-choice-display {
+      background: white;
+      border: 2px dashed #93c5fd;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 24px;
+      font-weight: 900;
+      color: #1e3a8a;
+    }
+
+    .referee-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 14px 20px;
+      font-size: 24px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    }
+
+    .btn-agree {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+    }
+
+    .btn-agree:hover {
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+    }
+
+    .btn-reject {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: white;
+    }
+
+    .btn-reject:hover {
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+    }
+
+    /* 雙人失誤連帶處罰卡片（小白板題） */
+    .penalty-round-badge {
+      background: #dc2626;
+      color: white;
+      padding: 5px 16px;
+      border-radius: 999px;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .penalty-status-bar {
+      background: #fff;
+      border: 2px dashed #f87171;
+      border-radius: 12px;
+      padding: 10px 16px;
+      font-size: 20px;
+      font-weight: 800;
+      color: #991b1b;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .mutual-review-box {
+      background: #f8fafc;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .review-btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .review-choice-btn {
+      border: 2px solid #cbd5e1;
+      background: white;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 20px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+
+    .review-choice-btn:hover {
+      background: #f1f5f9;
+      transform: translateY(-1px);
+    }
+
+    .review-choice-btn.selected-pass {
+      background: #dcfce7 !important;
+      border-color: #16a34a !important;
+      color: #15803d !important;
+      box-shadow: 0 0 0 2px #86efac;
+    }
+
+    .review-choice-btn.selected-fail {
+      background: #fee2e2 !important;
+      border-color: #dc2626 !important;
+      color: #b91c1c !important;
+      box-shadow: 0 0 0 2px #fca5a5;
+    }
+
+    .penalty-card {
+      background: #fef2f2;
+      border: 3px solid #ef4444;
+      border-radius: 20px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+      animation: flash 1s alternate;
+    }
+
+    .penalty-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .penalty-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 700px) {
+      .penalty-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .penalty-item-box {
+      background: white;
+      border: 2.5px solid #fca5a5;
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      box-shadow: 0 3px 8px rgba(239, 68, 68, 0.08);
+    }
+
+    /* 決戰模式警報全域橫幅 */
+    .urgent-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #dc2626;
+      color: white;
+      text-align: center;
+      font-weight: 900;
+      font-size: 24px;
+      padding: 10px;
+      z-index: 999;
+      display: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+      animation: flash 1s infinite alternate;
+    }
+
+    @keyframes flash {
+      from { opacity: 0.9; }
+      to { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 最後 5 分鐘決戰警報橫幅 -->
+  <div id="urgentBanner" class="urgent-banner">
+    🚨 進入最後 5 分鐘決戰衝刺模式！翻書加速，爭奪最終大富翁總冠軍！
+  </div>
+
+  <!-- 頂部資訊列 -->
+  <header>
+    <div class="header-title">
+      <span style="font-size: 38px;">🎲</span>
+      <div>
+        <h1 style="font-size: 28px; font-weight: 900; color: #0f172a;">四年級數學期中複習大富翁</h1>
+        <div style="font-size: 16.5px; color: #64748b; font-weight: 700;">南一四上 Ch01~Ch05・每輪隨機換頁翻書挑戰</div>
+      </div>
+    </div>
+
+    <!-- 總遊戲計時器 -->
+    <div class="timer-container" id="gameTimerDisplay">
+      <span style="font-size: 34px;">⏱️</span>
+      <span id="timerText">30:00</span>
+    </div>
+
+    <!-- 功能控制按鈕 -->
+    <div class="header-actions">
+      <button class="icon-btn" id="soundToggleBtn">🔊 音效開</button>
+      <button class="icon-btn" id="rulesBtn">📖 規則說明</button>
+      <button class="icon-btn" id="leaderboardBtn">🏆 戰績榜</button>
+      <button class="icon-btn" id="settleNowBtn" style="color: #b91c1c;">🏳️ 提早結算</button>
+    </div>
+  </header>
+
+  <!-- 遊戲主區塊 -->
+  <main>
+    <!-- 左側：玩家 1 面板 -->
+    <section class="player-panel active-p1" id="p1Panel">
+      <div class="player-header">
+        <div class="avatar avatar-p1"><img src="assets/avatar_p1.jpg" class="avatar-img" alt="紅隊頭像"></div>
+        <div>
+          <div class="player-title" style="color: var(--p1-dark);" id="p1Title">紅隊探險家</div>
+          <div class="player-seat" id="p1SeatDisplay">座號：尚未選取</div>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <span>💰 金幣資產</span>
+        <span class="stat-val gold-val" id="p1Gold">1000</span>
+      </div>
+
+      <div class="stat-row">
+        <span>🏁 完成圈數</span>
+        <span class="stat-val lap-val" id="p1Laps">第 1 / 4 輪</span>
+      </div>
+
+      <div>
+        <div style="font-size: 24px; font-weight: 900; color: #475569; margin-bottom: 6px;">🚩 佔領領地 (過路費收益)</div>
+        <div class="lands-grid" id="p1Lands">
+          <span style="font-size: 20px; color: #94a3b8; font-weight: 800;">尚未佔領領地</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 中央：環狀棋盤 -->
+    <section class="board-container">
+      <div class="board-grid" id="boardGrid">
+        <!-- 20 個棋格由 JS 動態生成在四個外圍邊緣 -->
+        
+        <!-- 中央核心操作區 (16:9 滿版豐富主控台) -->
+        <div class="board-center">
+          <!-- 頂部：對局戰況即時比拼看板 -->
+          <div class="center-top-bar">
+            <!-- P1 迷你戰況 -->
+            <div class="center-team-card team-p1">
+              <img src="assets/avatar_p1.jpg" class="center-team-avatar" alt="紅隊" />
+              <div class="center-team-info">
+                <div class="center-team-name" id="centerP1Name">紅隊探險家</div>
+                <div class="center-team-stats">
+                  💰 <span id="centerP1GoldVal">$1000</span> ｜ 🚩 <span id="centerP1LandsVal">0 處</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 回合指示廣播條 -->
+            <div class="turn-announcer turn-p1" id="turnAnnouncer">
+              <img src="assets/avatar_p1.jpg" class="turn-avatar-badge" id="turnAvatarBadge" alt="回合玩家" />
+              <span id="turnText">輪到 紅隊探險家 擲骰！</span>
+            </div>
+
+            <!-- P2 迷你戰況 -->
+            <div class="center-team-card team-p2">
+              <div class="center-team-info" style="text-align: right;">
+                <div class="center-team-name" id="centerP2Name">藍隊大富翁</div>
+                <div class="center-team-stats">
+                  💰 <span id="centerP2GoldVal">$1000</span> ｜ 🚩 <span id="centerP2LandsVal">0 處</span>
+                </div>
+              </div>
+              <img src="assets/avatar_p2.jpg" class="center-team-avatar" alt="藍隊" />
+            </div>
+          </div>
+
+          <!-- 中部：三核心功能面板 (左: 冒險成就 ｜ 中: 3D 骰子主機 ｜ 右: 課本情報站) -->
+          <div class="center-main-grid">
+            <!-- 左欄：冒險主角與五大單元成就 -->
+            <div class="center-panel-box">
+              <div class="center-box-title">🏆 單元冒險進度</div>
+              <div class="board-hero-card" title="四年級期中數學大冒險！" style="margin: 2px 0;">
+                <img src="assets/board_center.jpg" class="board-hero-img" alt="數學大冒險主視覺" style="width: clamp(80px, 9vw, 130px); height: clamp(80px, 9vw, 130px);" />
+              </div>
+              <div class="unit-badges-row">
+                <div class="unit-badge-pill" id="badgeUnit1" title="單元1：一億以內的數">
+                  <img src="assets/unit_ch1.jpg" class="mini-unit-icon" alt="Ch1" />
+                  <span>U1 大數</span>
+                </div>
+                <div class="unit-badge-pill" id="badgeUnit2" title="單元2：乘法">
+                  <img src="assets/unit_ch2.jpg" class="mini-unit-icon" alt="Ch2" />
+                  <span>U2 乘法</span>
+                </div>
+                <div class="unit-badge-pill" id="badgeUnit3" title="單元3：角度">
+                  <img src="assets/unit_ch3.jpg" class="mini-unit-icon" alt="Ch3" />
+                  <span>U3 角度</span>
+                </div>
+                <div class="unit-badge-pill" id="badgeUnit4" title="單元4：除法">
+                  <img src="assets/unit_ch4.jpg" class="mini-unit-icon" alt="Ch4" />
+                  <span>U4 除法</span>
+                </div>
+                <div class="unit-badge-pill" id="badgeUnit5" title="單元5：三角形與統計圖">
+                  <img src="assets/unit_ch5.jpg" class="mini-unit-icon" alt="Ch5" />
+                  <span>U5 圖形</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 中欄：3D 骰子控制核心 -->
+            <div class="center-panel-box center-dice-box">
+              <div class="center-box-title">🎲 擲骰推進器</div>
+              <button class="dice-btn" id="diceBtn" title="點擊擲骰子">🎲</button>
+              <div class="dice-history-pill" id="diceHistoryPill">🎲 上次擲出：【 準備起跑 】</div>
+              <div class="action-hint" id="actionHint">點擊骰子向前移動 (1~4 步)</div>
+              <div class="rule-quick-tag">
+                ✍️ 小白板計算 ✕ 🔍 裁判翻書核對
+              </div>
+            </div>
+
+            <!-- 右欄：實體課本翻頁指南與特殊格雷達 -->
+            <div class="center-panel-box">
+              <div class="center-box-title">📖 課本任務情報</div>
+              <div class="book-radar-list">
+                <div class="radar-item">
+                  <span class="radar-icon">📑</span>
+                  <div class="radar-text">
+                    <b>課本核心複習頁碼</b>
+                    <small>Ch1~Ch5 (p.18 ~ p.80)</small>
+                  </div>
+                </div>
+                <div class="radar-item">
+                  <span class="radar-icon">⛽</span>
+                  <div class="radar-text">
+                    <b>加油補給站</b>
+                    <small>小白板速查任務領 $150</small>
+                  </div>
+                </div>
+                <div class="radar-item">
+                  <span class="radar-icon">⚡</span>
+                  <div class="radar-text">
+                    <b>順風快進格</b>
+                    <small>極速答題直接衝刺 2 步</small>
+                  </div>
+                </div>
+                <div class="radar-item">
+                  <span class="radar-icon">🍀</span>
+                  <div class="radar-text">
+                    <b>機會命運事件</b>
+                    <small>課堂任務抽驚喜卡片</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 底部：4 輪賽道里程碑進度條 -->
+          <div class="center-bottom-bar">
+            <div class="round-track-label">
+              🏁 4 輪對局進度（保證 4 輪巡迴）：
+            </div>
+            <div class="round-milestones">
+              <div class="milestone-step active-step" id="mStep1">
+                <span class="step-num">1</span> 第 1 輪 (起跑)
+              </div>
+              <div class="step-arrow">➔</div>
+              <div class="milestone-step" id="mStep2">
+                <span class="step-num">2</span> 第 2 輪 (爭奪)
+              </div>
+              <div class="step-arrow">➔</div>
+              <div class="milestone-step" id="mStep3">
+                <span class="step-num">3</span> 第 3 輪 (白熱化)
+              </div>
+              <div class="step-arrow">➔</div>
+              <div class="milestone-step" id="mStep4">
+                <span class="step-num">4</span> 第 4 輪 (決戰)
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 右側：玩家 2 面板 -->
+    <section class="player-panel" id="p2Panel">
+      <div class="player-header">
+        <div class="avatar avatar-p2"><img src="assets/avatar_p2.jpg" class="avatar-img" alt="藍隊頭像"></div>
+        <div>
+          <div class="player-title" style="color: var(--p2-dark);" id="p2Title">藍隊大富翁</div>
+          <div class="player-seat" id="p2SeatDisplay">座號：尚未選取</div>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <span>💰 金幣資產</span>
+        <span class="stat-val gold-val" id="p2Gold">1000</span>
+      </div>
+
+      <div class="stat-row">
+        <span>🏁 完成圈數</span>
+        <span class="stat-val lap-val" id="p2Laps">第 1 / 4 輪</span>
+      </div>
+
+      <div>
+        <div style="font-size: 24px; font-weight: 900; color: #475569; margin-bottom: 6px;">🚩 佔領領地 (過路費收益)</div>
+        <div class="lands-grid" id="p2Lands">
+          <span style="font-size: 20px; color: #94a3b8; font-weight: 800;">尚未佔領領地</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 彈窗 1：開局座號與時間設定 (必填) -->
+  <div class="modal-overlay" id="setupModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">🎲 遊戲開局設定 (1~28 號選定)</div>
+        <div class="badge">雙人對局</div>
+      </div>
+
+      <div class="setup-container">
+        <!-- 遊戲規則指引卡片 -->
+        <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid #86efac; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="font-size: 26px; font-weight: 900; color: #166534; display: flex; align-items: center; gap: 8px;">
+              <span>📖</span> 遊戲規則與過關指南（開局必讀）
+            </div>
+            <button class="icon-btn" id="openDetailedRulesBtn" style="padding: 6px 14px; font-size: 22px; background: white;">詳細細則 🔍</button>
+          </div>
+          <div style="font-size: 22px; font-weight: 800; color: #15803d; line-height: 1.6; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div>🔹 <b>小白板計算</b>：作答者可在實體小白板動筆直式運算並點選答案。</div>
+            <div>🔹 <b>裁判翻書審查</b>：裁判翻閱課本審查答案！審查正確雙方依比例賺取金幣。</div>
+            <div>🔹 <b>抓錯反制佔地</b>：若作答者答錯被裁判抓出，換裁判獲得佔地優先權！</div>
+            <div>🔹 <b>雙人連帶處罰</b>：若答錯裁判沒看出，兩人皆在小白板罰寫不同類似題！</div>
+          </div>
+        </div>
+
+        <div style="font-size: 22px; font-weight: 800; color: #475569;">
+          請兩位四年級小朋友準備好實體數學課本、鉛筆與計算紙，並選擇各自的座號：
+        </div>
+
+        <!-- 玩家 1 座號 -->
+        <div class="setup-player-card p1-border">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <img src="assets/avatar_p1.jpg" style="width: 66px; height: 66px; border-radius: 18px; object-fit: cover; border: 2px solid var(--p1-color); box-shadow: 0 2px 6px rgba(0,0,0,0.1);" alt="紅隊" />
+            <div>
+              <label style="font-size: 22.5px; font-weight: 900; color: var(--p1-dark);">
+                🔴 玩家 1（紅隊・火焰獅子探險家）：選擇座號
+              </label>
+              <div style="font-size: 16.5px; color: #64748b; font-weight: 700;">活力果敢・勇闖大數與乘法挑戰</div>
+            </div>
+          </div>
+          <select id="p1SeatSelect" class="seat-select">
+            <option value="">-- 請選擇 1 ~ 28 號 --</option>
+          </select>
+        </div>
+
+        <!-- 玩家 2 座號 -->
+        <div class="setup-player-card p2-border">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <img src="assets/avatar_p2.jpg" style="width: 66px; height: 66px; border-radius: 18px; object-fit: cover; border: 2px solid var(--p2-color); box-shadow: 0 2px 6px rgba(0,0,0,0.1);" alt="藍隊" />
+            <div>
+              <label style="font-size: 22.5px; font-weight: 900; color: var(--p2-dark);">
+                🔵 玩家 2（藍隊・智慧企鵝學者）：選擇座號
+              </label>
+              <div style="font-size: 16.5px; color: #64748b; font-weight: 700;">沉著冷靜・精通量角與除法驗算</div>
+            </div>
+          </div>
+          <select id="p2SeatSelect" class="seat-select">
+            <option value="">-- 請選擇 1 ~ 28 號 --</option>
+          </select>
+        </div>
+
+        <!-- 課堂時間選擇 -->
+        <div class="setup-player-card">
+          <label style="font-size: 21px; font-weight: 900; color: #334155;">
+            ⏱️ 課堂對局總時間
+          </label>
+          <select id="durationSelect" class="seat-select">
+            <option value="30">30 分鐘（推薦：預留前後開場與結算）</option>
+            <option value="35">35 分鐘（充裕練習時間）</option>
+            <option value="20">20 分鐘（快速複習模式）</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="primary-btn" id="startGameBtn">🚀 認證座號・開始大富翁！</button>
+      <button class="icon-btn" id="viewHistoryFromSetup" style="justify-content: center;">🏆 查看全班歷史戰績榜</button>
+    </div>
+  </div>
+
+  <!-- 彈窗 2：課本翻書解題任務卡 -->
+  <div class="modal-overlay hidden" id="questionModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title" id="qModalHeader" style="display: flex; align-items: center; gap: 8px;"><img id="qUnitBadge" src="assets/unit_ch1.jpg" style="width: 48px; height: 48px; border-radius: 12px; object-fit: cover; box-shadow: 0 2px 6px rgba(0,0,0,0.15);" alt="單元徽章"><span id="qModalTitleText">📘 課本翻書任務挑戰</span></div>
+        <div class="badge" id="qLapBadge">第 1 輪</div>
+      </div>
+
+      <!-- 課本指示橫幅 -->
+      <div class="book-banner">
+        <div class="book-target" id="bookTargetDisplay">
+          📖 請翻開數學課本 第 18 頁 第 2-(4) 題
+        </div>
+        <div class="role-dispatch">
+          <span id="roleAnswerer">👤 作答者：紅隊 (1 號) — 請在「小白板」計算答案</span>
+          <span id="roleChecker">🔍 裁判監督：藍隊 (2 號) — 翻到指定頁準備審查</span>
+        </div>
+      </div>
+
+      <!-- 75秒作答倒數進度條 -->
+      <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: 800; color: #64748b;">
+        <span>⏳ 翻書作答倒數</span>
+        <span id="qTimerText">75 秒</span>
+      </div>
+      <div class="question-timer-bar">
+        <div class="question-timer-progress" id="qTimerBar"></div>
+      </div>
+
+      <!-- 課本原文精確題目 -->
+      <div class="question-box" id="qProblemText">
+        題目載入中...
+      </div>
+
+      <!-- 作答選項 -->
+      <div class="options-grid" id="optionsContainer">
+        <!-- 4 個選項按鈕動態生成 -->
+      </div>
+
+      <!-- 裁判監督審查區（作答者選完後展開） -->
+      <div class="referee-box hidden" id="refereeBox">
+        <div class="referee-header">
+          <span style="font-size: 36px;">🔍</span>
+          <div>
+            <div style="font-size: 26px; font-weight: 900; color: #1e3a8a;" id="refereeTitle">裁判監督審查階段</div>
+            <div style="font-size: 22px; color: #475569; font-weight: 800;" id="refereeNotice">
+              請裁判監督翻閱實體課本核對答案！
+            </div>
+          </div>
+        </div>
+
+        <div class="referee-choice-display" id="refereeChoiceDisplay">
+          👤 作答者選擇了：【--】
+        </div>
+
+        <div style="font-size: 24px; font-weight: 900; color: #1e293b; margin: 6px 0;">
+          請裁判對照課本內容進行審查判定：
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+          <button class="referee-btn btn-agree" id="btnReviewAgree">
+            ✅ 作答者的答案【正確】
+          </button>
+          <button class="referee-btn btn-reject" id="btnReviewReject">
+            ❌ 作答者的答案【不正確】（我抓出錯誤！）
+          </button>
+        </div>
+      </div>
+
+      <!-- 迷思解析與判定回饋區 -->
+      <div class="feedback-box hidden" id="feedbackBox"></div>
+
+      <!-- 連帶處罰卡片：小白板類似題罰寫專區 (當作答者錯且裁判沒審出時觸發) -->
+      <div class="penalty-card hidden" id="penaltyCard">
+        <div class="penalty-header" style="justify-content: space-between; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 36px;">🚨</span>
+            <div>
+              <div style="font-size: 26px; font-weight: 900; color: #b91c1c;">雙人失誤連帶責任處罰（小白板題互審）</div>
+              <div style="font-size: 20px; color: #991b1b; font-weight: 800;">
+                作答者答錯且裁判未審出！兩人皆須在小白板上算題，雙方互審皆通過才能解除處罰！
+              </div>
+            </div>
+          </div>
+          <span class="penalty-round-badge" id="penaltyRoundBadge">第 1 / 3 輪處罰</span>
+        </div>
+
+        <div class="penalty-status-bar" id="penaltyStatusBar">
+          <span id="penaltyStatusMsg">兩位同學請翻閱課本，在小白板列出算式後互相審查！</span>
+          <span id="penaltyFailCounts" style="color: #dc2626; font-weight: 900;">累計未通過：作答者 0 次 ｜ 裁判 0 次</span>
+        </div>
+
+        <div class="penalty-grid">
+          <!-- 作答者題目 -->
+          <div class="penalty-item-box">
+            <div style="font-size: 26px; font-weight: 900; color: var(--p1-dark);" id="penaltyAnswererTitle">👤 作答者小白板題</div>
+            <div style="font-size: 20px; color: #64748b; font-weight: 800;" id="penaltyAnswererPage">📖 南一課本出處</div>
+            <div style="font-size: 24px; font-weight: 900; color: #0f172a; line-height: 1.6; background: #f8fafc; padding: 14px; border-radius: 14px; border: 2px solid #cbd5e1;" id="penaltyAnswererPrompt">題目原文</div>
+            
+            <div style="font-size: 19px; color: #92400e; font-weight: 900; background: #fef3c7; padding: 8px 14px; border-radius: 10px; border: 1.5px solid #fde68a;">
+              💡 翻書指引：請翻閱課本對應頁數例題，在小白板寫下完整計算過程（不直接提供答案照抄）！
+            </div>
+
+            <!-- 互審區：由裁判審查作答者 -->
+            <div class="mutual-review-box">
+              <div style="font-size: 20px; font-weight: 900; color: #1e3a8a;" id="penaltyReviewerLabel1">🔍 由裁判監督審查此題：</div>
+              <div class="review-btn-group">
+                <button type="button" class="review-choice-btn" id="p1ReviewPassBtn">✅ 通過</button>
+                <button type="button" class="review-choice-btn" id="p1ReviewFailBtn">❌ 未通過</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 裁判題目 -->
+          <div class="penalty-item-box">
+            <div style="font-size: 26px; font-weight: 900; color: var(--p2-dark);" id="penaltyRefereeTitle">🔍 裁判監督小白板題</div>
+            <div style="font-size: 20px; color: #64748b; font-weight: 800;" id="penaltyRefereePage">📖 南一課本出處</div>
+            <div style="font-size: 24px; font-weight: 900; color: #0f172a; line-height: 1.6; background: #f8fafc; padding: 14px; border-radius: 14px; border: 2px solid #cbd5e1;" id="penaltyRefereePrompt">題目原文</div>
+            
+            <div style="font-size: 19px; color: #92400e; font-weight: 900; background: #fef3c7; padding: 8px 14px; border-radius: 10px; border: 1.5px solid #fde68a;">
+              💡 翻書指引：請翻閱課本對應頁數例題，在小白板寫下完整計算過程（不直接提供答案照抄）！
+            </div>
+
+            <!-- 互審區：由作答者審查裁判 -->
+            <div class="mutual-review-box">
+              <div style="font-size: 20px; font-weight: 900; color: #991b1b;" id="penaltyReviewerLabel2">👤 由作答者審查此題：</div>
+              <div class="review-btn-group">
+                <button type="button" class="review-choice-btn" id="p2ReviewPassBtn">✅ 通過</button>
+                <button type="button" class="review-choice-btn" id="p2ReviewFailBtn">❌ 未通過</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 提交互審結果按鈕 -->
+        <button class="primary-btn" id="submitMutualReviewBtn" style="background: #dc2626; margin-top: 6px; font-size: 17px; padding: 12px 20px;">
+          ⚖️ 雙方已在小白板算完・送出互審結果
+        </button>
+
+        <!-- 互審結論回饋盒 -->
+        <div id="penaltyVerdictBox" class="hidden" style="padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 800; line-height: 1.5;"></div>
+
+        <!-- 進入下一輪處罰按鈕 -->
+        <button class="primary-btn hidden" id="penaltyNextRoundBtn" style="background: #ea580c; margin-top: 6px; font-size: 17px; padding: 12px 20px;">
+          🔄 抽換全新題目・進入下一輪處罰
+        </button>
+
+        <!-- 解除處罰按鈕 -->
+        <button class="primary-btn hidden" id="penaltyDoneBtn" style="background: #16a34a; margin-top: 6px; font-size: 17px; padding: 12px 20px;">
+          🎉 處罰已解除・繼續遊戲
+        </button>
+      </div>
+
+      <!-- 買地插旗確認按鈕區 -->
+      <div id="landActionGroup" class="hidden" style="display: flex; gap: 12px; flex-direction: column;">
+        <button class="primary-btn" id="buyLandBtn">🚩 花費金幣插旗佔領此地</button>
+        <button class="icon-btn" id="skipBuyBtn" style="justify-content: center; padding: 14px; font-size: 20px;">
+          💰 保留金幣不佔領
+        </button>
+      </div>
+
+      <!-- 下一輪換人按鈕 -->
+      <button class="primary-btn hidden" id="nextTurnBtn" style="background: #2563eb;">➡️ 換下一位玩家擲骰</button>
+    </div>
+  </div>
+
+  <!-- 彈窗 3：機會／補給／加速任務檢核卡 -->
+  <div class="modal-overlay hidden" id="eventModal">
+    <div class="modal-card" style="text-align: center;">
+      <div style="display: flex; justify-content: center; margin-bottom: 8px;" id="eventIconBox">
+        <img id="eventImg" src="assets/tile_gas.jpg" style="width: 76px; height: 76px; border-radius: 18px; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.12); border: 2.5px solid white;" alt="事件圖標" />
+      </div>
+      <h2 style="font-size: 32px; font-weight: 900; color: #0f172a; margin-bottom: 8px;" id="eventTitle">⛽ 加油小站・體力充值任務</h2>
+      <p style="font-size: 21px; font-weight: 700; color: #475569; line-height: 1.6;" id="eventDesc">抵達補給站！完成課本速查與小白板任務，即可享有精力補給！</p>
+
+      <!-- 任務指示卡片 -->
+      <div style="background: #f0fdf4; border: 3px solid #86efac; border-radius: 20px; padding: 20px; text-align: left; margin: 12px 0;" id="eventTaskCard">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+          <div style="font-size: 22px; font-weight: 900; color: #166534;" id="eventTaskHeader">
+            📖 課本任務要求
+          </div>
+          <div class="badge" style="background: #dcfce7; color: #15803d; font-size: 17px; padding: 6px 14px;" id="eventRewardBadge">
+            🎁 獎勵：金幣 +$150
+          </div>
+        </div>
+
+        <div style="font-size: 20px; font-weight: 800; color: #92400e; margin-bottom: 6px;" id="eventTaskPage">
+          南一課本 第 62 頁
+        </div>
+        <div style="font-size: 20px; font-weight: 900; color: #0f172a; line-height: 1.6; background: white; padding: 12px 14px; border-radius: 14px; border: 2px solid #cbd5e1;" id="eventTaskPrompt">
+          請作答者翻開課本指定頁數，在小白板列出算式與解答，完成後交給裁判核對！
+        </div>
+
+        <div style="margin-top: 10px; font-size: 16px; color: #166534; font-weight: 800;" id="eventTaskHint">
+          🔍 裁判監督職責：請翻開實體課本指定頁數，核對作答者的小白板算式與內容是否完全正確！
+        </div>
+      </div>
+
+      <!-- 任務結果回饋 -->
+      <div class="feedback-box hidden" id="eventFeedbackBox"></div>
+
+      <!-- 裁判認證按鈕區 -->
+      <div id="eventActionGroup" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 10px;">
+        <button class="referee-btn btn-agree" id="eventPassBtn">
+          ✅ 裁判認證：任務完成！享有獎勵
+        </button>
+        <button class="referee-btn btn-reject" id="eventFailBtn">
+          ❌ 未完成（放棄本次獎勵）
+        </button>
+      </div>
+
+      <button class="primary-btn hidden" id="eventConfirmBtn" style="margin-top: 14px;">繼續遊戲 ➡️</button>
+    </div>
+  </div>
+
+  <!-- 彈窗 4：時間到總結算排行榜 -->
+  <div class="modal-overlay hidden" id="settleModal">
+    <div class="modal-card" style="text-align: center;">
+      <div class="settle-trophy-container">
+        <img src="assets/trophy_winner.jpg" class="settle-trophy-img" alt="總冠軍黃金獎盃" />
+      </div>
+      <h2 style="font-size: 34px; font-weight: 900; color: #0f172a;" id="settleTitle">對局時間結束・資產總結算！</h2>
+      <div style="font-size: 19.5px; font-weight: 700; color: #64748b;" id="settleSub">
+        恭喜兩位小朋友在 30 分鐘內完成期中數學全單元大複習！
+      </div>
+
+      <!-- 雙方資產對比卡 -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px;">
+        <div class="setup-player-card p1-border" id="settleP1Card">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <img src="assets/avatar_p1.jpg" style="width: 56px; height: 56px; border-radius: 15px; object-fit: cover; border: 2px solid var(--p1-color);" alt="紅隊" />
+            <div style="font-size: 28px; font-weight: 900; color: var(--p1-dark);" id="settleP1Name">紅隊 (1號)</div>
+          </div>
+          <div style="font-size: 13px; color: #64748b; font-weight: 700;" id="settleP1Laps">完成圈數：4 輪</div>
+          <div style="font-size: 21px; font-weight: 800; margin-top: 8px;">現金：<span id="settleP1Cash">$1200</span></div>
+          <div style="font-size: 21px; font-weight: 800;">地產價值：<span id="settleP1LandsVal">$800</span></div>
+          <div style="font-size: 30px; font-weight: 900; color: #d97706; margin-top: 8px; border-top: 3px dashed #cbd5e1; padding-top: 8px;">
+            總資產：<span id="settleP1Total">$2000</span>
+          </div>
+        </div>
+
+        <div class="setup-player-card p2-border" id="settleP2Card">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <img src="assets/avatar_p2.jpg" style="width: 56px; height: 56px; border-radius: 15px; object-fit: cover; border: 2px solid var(--p2-color);" alt="藍隊" />
+            <div style="font-size: 28px; font-weight: 900; color: var(--p2-dark);" id="settleP2Name">藍隊 (2號)</div>
+          </div>
+          <div style="font-size: 13px; color: #64748b; font-weight: 700;" id="settleP2Laps">完成圈數：4 輪</div>
+          <div style="font-size: 21px; font-weight: 800; margin-top: 8px;">現金：<span id="settleP2Cash">$1100</span></div>
+          <div style="font-size: 21px; font-weight: 800;">地產價值：<span id="settleP2LandsVal">$600</span></div>
+          <div style="font-size: 30px; font-weight: 900; color: #d97706; margin-top: 8px; border-top: 3px dashed #cbd5e1; padding-top: 8px;">
+            總資產：<span id="settleP2Total">$1700</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 冠軍宣布區 -->
+      <div style="background: #fef3c7; border: 3px solid #f59e0b; border-radius: 16px; padding: 16px 20px; margin-top: 12px; font-size: 28px; font-weight: 900; color: #92400e;" id="settleWinnerAnnouncement">
+        🏆 恭喜 紅隊 (1 號) 榮登本次數學大富翁總冠軍！
+      </div>
+
+      <!-- 平手驟死賽提示按鈕（平手時出現） -->
+      <button class="primary-btn hidden" id="suddenDeathBtn" style="background: #dc2626; margin-top: 10px;">
+        ⚔️ 總資產相同！啟動 1 題黃金搶答驟死賽！
+      </button>
+
+      <div style="display: flex; gap: 8px; margin-top: 14px;">
+        <button class="primary-btn" id="playAgainBtn">🔄 再玩一局 (回選號)</button>
+        <button class="icon-btn" id="viewHistoryFromSettle" style="flex: 1; justify-content: center;">🏆 查看戰績榜</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 彈窗 5：全班歷史戰績榜 (LocalStorage) -->
+  <div class="modal-overlay hidden" id="leaderboardModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">🏆 四年級期中數學大富翁・全班戰績榜</div>
+        <button class="icon-btn" id="closeLeaderboardBtn">✕ 關閉</button>
+      </div>
+
+      <div style="font-size: 13px; color: #64748b; font-weight: 700;">
+        資料自動儲存於本機瀏覽器（免聯網），記錄每位座號的勝場、平均總資產與對局日期：
+      </div>
+
+      <div style="max-height: 320px; overflow-y: auto;">
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th>座號</th>
+              <th>參賽場次</th>
+              <th>獲勝次數</th>
+              <th>最高總資產</th>
+              <th>勝率</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody">
+            <!-- 動態生成座號戰績 -->
+          </tbody>
+        </table>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+        <button class="icon-btn" id="clearHistoryBtn" style="color: #b91c1c; border-color: #fca5a5;">
+          🗑️ 清空歷史戰績
+        </button>
+        <button class="primary-btn" id="backToGameBtn" style="width: auto; padding: 8px 24px;">
+          返回遊戲
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 彈窗 6：詳細遊戲規則與過關指南 -->
+  <div class="modal-overlay hidden" id="rulesModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">📖 大富翁遊戲規則與過關秘笈</div>
+        <button class="icon-btn" id="closeRulesBtn">✕ 關閉</button>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px; font-size: 20px; line-height: 1.7; color: #334155;">
+        <div style="background: #f1f5f9; border-radius: 12px; padding: 12px; border-left: 5px solid #0284c7;">
+          <h3 style="font-size: 22.5px; font-weight: 900; color: #0369a1; margin-bottom: 4px;">🎯 遊戲總目標</h3>
+          <p>在 30~35 分鐘內，兩位四年級小朋友輪流擲骰移動，實體翻閱數學課本破除期中五大單元迷思，爭取在時間內繞滿 4 輪以上，累積最高的「現金＋地產價值」獲得大富翁總冠軍！</p>
+        </div>
+
+        <div style="background: #fef3c7; border-radius: 12px; padding: 12px; border-left: 5px solid #f59e0b;">
+          <h3 style="font-size: 22.5px; font-weight: 900; color: #92400e; margin-bottom: 4px;">📖 小白板計算與裁判翻書審查機制</h3>
+          <ul style="padding-left: 20px;">
+            <li><b>👤 作答者（小白板運算）</b>：踩中題目格時，翻閱南一課本指定頁數，在<b>實體小白板</b>動筆列式運算，75秒內送出答案。</li>
+            <li><b>🔍 裁判監督（翻書審查與裁決）</b>：裁判翻到指定頁數嚴格核對作答者答案，點選「審查判定：正確」或「抓出錯誤：不正確」。</li>
+            <li><b>💰 雙贏分潤與佔地</b>：作答正確且裁判審查正確，依比例分潤（作答者 $120、裁判 $60），作答者可選擇是否花金幣插旗佔領此格！</li>
+            <li><b>🎯 裁判抓錯反制</b>：作答者答錯且被裁判成功抓錯，裁判獨得 $150 獎勵金，並<b>換由裁判獲得此格佔領權</b>！</li>
+            <li><b>🚨 雙人失誤連帶處罰</b>：作答者答錯且裁判沒看出來，雙方扣款 $50！系統公佈詳解與步驟，並<b>各自派發一道同單元不同的課本原題</b>，兩人皆須在小白板上完成運算後方可解除處罰！</li>
+          </ul>
+        </div>
+
+        <div style="background: #fee2e2; border-radius: 12px; padding: 12px; border-left: 5px solid #ef4444;">
+          <h3 style="font-size: 22.5px; font-weight: 900; color: #b91c1c; margin-bottom: 4px;">🚩 插旗佔地與過路費博弈</h3>
+          <ul style="padding-left: 20px;">
+            <li>答對題目且該格為無人佔領的地產時，作答者可花費金幣插上代表色旗幟（🔴 紅旗 / 🏁 藍旗）佔領領地。</li>
+            <li>對手踩到你的領地時，需支付 <b>$80 ~ $200 過路費</b>（直接從對手現金扣除並匯入你的錢包）！</li>
+          </ul>
+        </div>
+
+        <div style="background: #e0f2fe; border-radius: 12px; padding: 12px; border-left: 5px solid #0284c7;">
+          <h3 style="font-size: 22.5px; font-weight: 900; color: #0369a1; margin-bottom: 4px;">⚡ 特殊格子與四輪保證</h3>
+          <ul style="padding-left: 20px;">
+            <li><b>⚡ 順風快進格</b>：踩中直接再向前推進 2 步，助攻 4 輪達成！</li>
+            <li><b>🍀 機會命運格</b>：抽取隨機好運卡（獎勵金幣或步數事件）。</li>
+            <li><b>⛽ 加油小站格</b>：免費領取 $150 精力補給金幣。</li>
+            <li><b>🚩 起點格</b>：經過或停留皆可領取 $200 起點獎金！</li>
+          </ul>
+        </div>
+
+        <div style="background: #f3e8ff; border-radius: 12px; padding: 12px; border-left: 5px solid #a855f7;">
+          <h3 style="font-size: 15px; font-weight: 900; color: #7e22ce; margin-bottom: 4px;">⏱️ 決戰衝刺與結算獲勝</h3>
+          <ul style="padding-left: 20px;">
+            <li><b>最後 5 分鐘</b>：全域響起決戰衝刺警報，把握最後反超機會！</li>
+            <li><b>時間歸零</b>：強制響笛鳴哨，系統自動結算「現金＋地產價值」最高者為冠軍。若總資產相同，進入 <b>⚔️ 1 題黃金搶答驟死賽</b>！</li>
+          </ul>
+        </div>
+      </div>
+
+      <button class="primary-btn" id="startFromRulesBtn" style="margin-top: 14px;">
+        👍 我完全清楚規則了！開始遊戲！
+      </button>
+    </div>
+  </div>
+
+  <script>
+    /* ============================================================
+       1. 原生 Web Audio API 合成音效引擎 (零外部依賴、斷網可用)
+       ============================================================ */
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playTone(freq, type, duration, delay = 0, vol = 0.2) {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+
+        setTimeout(() => {
+          try {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+            gain.gain.setValueAtTime(vol, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start();
+            osc.stop(this.ctx.currentTime + duration);
+          } catch(e) {}
+        }, delay);
+      }
+
+      dice() {
+        for (let i = 0; i < 5; i++) {
+          this.playTone(300 + Math.random() * 200, 'triangle', 0.05, i * 60, 0.15);
+        }
+      }
+
+      move() {
+        this.playTone(520, 'sine', 0.08, 0, 0.25);
+      }
+
+      correct() {
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((f, i) => this.playTone(f, 'triangle', 0.25, i * 90, 0.3));
+      }
+
+      wrong() {
+        this.playTone(160, 'sawtooth', 0.3, 0, 0.3);
+        this.playTone(130, 'sawtooth', 0.4, 150, 0.3);
+      }
+
+      buy() {
+        this.playTone(987.77, 'sine', 0.15, 0, 0.25);
+        this.playTone(1318.51, 'sine', 0.3, 100, 0.3);
+      }
+
+      toll() {
+        this.playTone(400, 'square', 0.12, 0, 0.2);
+        this.playTone(300, 'square', 0.25, 100, 0.2);
+      }
+
+      heartbeat() {
+        this.playTone(120, 'sine', 0.1, 0, 0.35);
+        this.playTone(90, 'sine', 0.15, 120, 0.25);
+      }
+
+      fanfare() {
+        const melody = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
+        const times = [0, 120, 240, 360, 520, 680];
+        melody.forEach((f, i) => this.playTone(f, 'triangle', 0.3, times[i], 0.35));
+      }
+    }
+
+    const sound = new SoundEngine();
+
+    /* ============================================================
+       2. 分單元題庫池（每一輪指定頁數/範圍隨機更換，100% 課本原文）
+       ============================================================ */
+    const UNIT_QUESTION_POOLS = {
+      // ===== 單元 1：一億以內的數 =====
+      unit1: [
+        {
+          id: "U1_01",
+          unit: "單元 1",
+          title: "連續進位迷思",
+          page: 18,
+          section: "第 2 大題第 (4) 小題",
+          prompt: "5999000 再多 1 個 1 萬是（　　　　　　　）。",
+          options: [
+            { text: "6009000", isCorrect: true, reason: "正解！599 萬再多 1 萬變成 600 萬，但百位千位的 9000 依然保留！" },
+            { text: "6000000", isCorrect: false, reason: "迷思：誤把千位與百位的 9000 全部變成 0 了，5999000+10000 是 6009000。" },
+            { text: "5999001", isCorrect: false, reason: "迷思：誤以為「多 1 個 1 萬」是在個位 +1。" },
+            { text: "5000000", isCorrect: false, reason: "計算錯誤：數值變小了！" }
+          ]
+        },
+        {
+          id: "U1_02",
+          unit: "單元 1",
+          title: "大數連連看",
+          page: 18,
+          section: "第 3 大題連連看",
+          prompt: "課本第 18 頁連連看：國字讀作「七千零七萬零八百六十」，對應的阿拉伯數字是哪一個？",
+          options: [
+            { text: "70070860", isCorrect: true, reason: "正解！千萬位 7、萬位 7、百位 8、十位 6，連續 0 只讀一個零。" },
+            { text: "70700860", isCorrect: false, reason: "迷思：這是「七千零七十萬零八百六十」，十萬位多了 7。" },
+            { text: "70007860", isCorrect: false, reason: "迷思：這是「七千萬七千八百六十」，7 在千位不是萬位。" },
+            { text: "70000008", isCorrect: false, reason: "迷思：這是「七千萬零八」。" }
+          ]
+        },
+        {
+          id: "U1_03",
+          unit: "單元 1",
+          title: "大數比較大小",
+          page: 19,
+          section: "第 4 大題第 (1) 小題",
+          prompt: "在 ⃝ 中填入＞、＜或＝： 40700000 ⃝ 470 萬",
+          options: [
+            { text: "＞", isCorrect: true, reason: "正解！40700000 是八位數(4070萬)，470萬是 4700000(七位數)，4070萬 ＞ 470萬！" },
+            { text: "＜", isCorrect: false, reason: "迷思：誤把 407 拿去和 470 比大小，忽略了 40700000 後面是 5 個 0！" },
+            { text: "＝", isCorrect: false, reason: "兩數數值不同，不可填等號。" },
+            { text: "無法比較", isCorrect: false, reason: "大數可以透過換算成相同單位或位數進行比較。" }
+          ]
+        },
+        {
+          id: "U1_04",
+          unit: "單元 1",
+          title: "位值拆解填填看",
+          page: 18,
+          section: "第 2 大題第 (1) 小題",
+          prompt: "400360 是（　　　）個十萬、（　　　）個百和（　　　）個十合起來的。",
+          options: [
+            { text: "4 個十萬、3 個百、6 個十", isCorrect: true, reason: "正解！十萬位是 4，百位是 3，十位是 6。" },
+            { text: "4 個萬、3 個百、6 個一", isCorrect: false, reason: "迷思：位值看錯，4 在十萬位不是萬位。" },
+            { text: "40 個十萬、3 個百、6 個十", isCorrect: false, reason: "迷思：40 個十萬是四百萬，不是四十萬。" },
+            { text: "4 個百萬、3 個千、6 個百", isCorrect: false, reason: "位值順序完全對錯。" }
+          ]
+        },
+        {
+          id: "U1_05",
+          unit: "單元 1",
+          title: "大數組成填填看",
+          page: 18,
+          section: "第 2 大題第 (2) 小題",
+          prompt: "4 個千萬、8 個十萬和 1 個千合起來是（　　　　）。",
+          options: [
+            { text: "40801000", isCorrect: true, reason: "正解！千萬位 4，十萬位 8，千位 1，其餘位補 0，為 40801000。" },
+            { text: "4801000", isCorrect: false, reason: "迷思：少了百萬位補 0，位數變成七位數了。" },
+            { text: "40810000", isCorrect: false, reason: "迷思：誤把千位的 1 放到萬位去了。" },
+            { text: "48100000", isCorrect: false, reason: "位值混淆。" }
+          ]
+        },
+        {
+          id: "U1_06",
+          unit: "單元 1",
+          title: "旅行社營業額大數應用",
+          page: 19,
+          section: "第 6 大題第 (1) 小題",
+          prompt: "小熊旅行社在去年的營業額大約是 36400000 元，今年比去年少 9800000 元，今年的營業額大約是幾萬元？",
+          options: [
+            { text: "2660 萬元", isCorrect: true, reason: "正解！3640 萬 － 980 萬 ＝ 2660 萬元。" },
+            { text: "2760 萬元", isCorrect: false, reason: "大數減法退位借位錯誤。" },
+            { text: "4620 萬元", isCorrect: false, reason: "迷思：題目是「少」，誤算成加法了！" },
+            { text: "26600000 萬元", isCorrect: false, reason: "單位重複錯誤：寫了國字萬元就不需再加後面 4 個零。" }
+          ]
+        }
+      ],
+
+      // ===== 單元 2：乘法 =====
+      unit2: [
+        {
+          id: "U2_01",
+          unit: "單元 2",
+          title: "牛奶算式迷思",
+          page: 30,
+          section: "第 1 大題第 (3) 小題",
+          prompt: "中央國小有 102 個學生，學校訂了 98 瓶牛奶，每瓶牛奶 12 元，共要付幾元？下面哪一個算式是對的？",
+          options: [
+            { text: "12×98", isCorrect: true, reason: "正解！每瓶 12 元 × 買了 98 瓶，學生數 102 人是干擾條件！" },
+            { text: "102×98", isCorrect: false, reason: "迷思：被 102 個學生干擾了，學校只有訂 98 瓶牛奶！" },
+            { text: "102×12", isCorrect: false, reason: "迷思：學生數 102 人不是牛奶瓶數，學校沒有訂 102 瓶。" },
+            { text: "12×102", isCorrect: false, reason: "迷思：每瓶 12 元乘上人數算出來並不是實際訂購瓶數的金額。" }
+          ]
+        },
+        {
+          id: "U2_02",
+          unit: "單元 2",
+          title: "含零直式乘法",
+          page: 30,
+          section: "第 2 大題第 (6) 小題",
+          prompt: "用直式算算看： 3007 × 59 ＝（　　　　）",
+          options: [
+            { text: "177413", isCorrect: true, reason: "正解！3007×9=27063，3007×50=150350，合起來是 177413。" },
+            { text: "17713", isCorrect: false, reason: "迷思：中間連續兩個 0 在乘法進位時漏算了位值。" },
+            { text: "150350", isCorrect: false, reason: "迷思：只算到了 3007×50，忘記加上 3007×9。" },
+            { text: "177433", isCorrect: false, reason: "直式乘法個位相加計算錯誤。" }
+          ]
+        },
+        {
+          id: "U2_03",
+          unit: "單元 2",
+          title: "體育館椅子乘法",
+          page: 31,
+          section: "第 4 大題第 (3) 小題",
+          prompt: "體育館擺放了 68 排椅子，每 1 排椅子有 45 張，體育館共擺了幾張椅子？",
+          options: [
+            { text: "3060 張", isCorrect: true, reason: "正解！45 × 68 ＝ 3060 張。" },
+            { text: "3000 張", isCorrect: false, reason: "乘法直式十位進位加總錯誤。" },
+            { text: "2960 張", isCorrect: false, reason: "乘法直式計算錯誤。" },
+            { text: "113 張", isCorrect: false, reason: "迷思：誤把排數與張數拿來用加法（68+45）計算。" }
+          ]
+        },
+        {
+          id: "U2_04",
+          unit: "單元 2",
+          title: "四位數乘一位數直式",
+          page: 30,
+          section: "第 2 大題第 (1) 小題",
+          prompt: "用直式算算看： 1125 × 8 ＝（　　　　）",
+          options: [
+            { text: "9000", isCorrect: true, reason: "正解！1125 × 8 ＝ 9000。" },
+            { text: "8900", isCorrect: false, reason: "連續進位十位與百位計算錯誤。" },
+            { text: "8000", isCorrect: false, reason: "忘記百位與十位的進位。" },
+            { text: "900", isCorrect: false, reason: "位數漏算一位。" }
+          ]
+        },
+        {
+          id: "U2_05",
+          unit: "單元 2",
+          title: "公仔購物乘法",
+          page: 31,
+          section: "第 4 大題第 (1) 小題",
+          prompt: "1 個公仔賣 3109 元，恩恩買 8 個，共要付幾元？",
+          options: [
+            { text: "24872 元", isCorrect: true, reason: "正解！3109 × 8 ＝ 24872 元。" },
+            { text: "24802 元", isCorrect: false, reason: "迷思：百位與十位乘 0 時進位遺漏。" },
+            { text: "2472 元", isCorrect: false, reason: "位數少算了一位。" },
+            { text: "24972 元", isCorrect: false, reason: "進位計算錯誤。" }
+          ]
+        },
+        {
+          id: "U2_06",
+          unit: "單元 2",
+          title: "自強號車票乘法",
+          page: 31,
+          section: "第 4 大題第 (2) 小題",
+          prompt: "屏東站到高雄站的自強號車票 1 張賣 48 元，旅行社買了 12 張，共要付幾元？",
+          options: [
+            { text: "576 元", isCorrect: true, reason: "正解！48 × 12 ＝ 576 元。" },
+            { text: "480 元", isCorrect: false, reason: "只算了 48×10，漏算 48×2。" },
+            { text: "566 元", isCorrect: false, reason: "直式乘法加總錯誤。" },
+            { text: "60 元", isCorrect: false, reason: "誤用加法 48+12。" }
+          ]
+        }
+      ],
+
+      // ===== 單元 3：角度 =====
+      unit3: [
+        {
+          id: "U3_01",
+          unit: "單元 3",
+          title: "量角器讀刻度",
+          page: 48,
+          section: "第 1 大題第 (1) 小題",
+          prompt: "看圖填填看：量角器中心對齊頂點，0度基準線在內圈，另一邊指向刻度，該角是（　　）度？",
+          options: [
+            { text: "40 度", isCorrect: true, reason: "正解！以內圈 0 度出發，指向 40 度，為銳角。" },
+            { text: "140 度", isCorrect: false, reason: "迷思：看錯外圈刻度了！這是一個比直角小的銳角，不可讀成 140 度。" },
+            { text: "50 度", isCorrect: false, reason: "刻度讀取偏差。" },
+            { text: "90 度", isCorrect: false, reason: "這不是直角。" }
+          ]
+        },
+        {
+          id: "U3_02",
+          unit: "單元 3",
+          title: "鐘面旋轉角",
+          page: 49,
+          section: "第 3 大題第 (1) 小題",
+          prompt: "下圖鐘面上的指針由 12 走到 4：指針往（　）時針方向旋轉（　）度？",
+          options: [
+            { text: "順時針，120 度", isCorrect: true, reason: "正解！順時針方向走 4 大格，一大格 30 度，30° × 4 ＝ 120°。" },
+            { text: "逆時針，120 度", isCorrect: false, reason: "方向判斷錯誤：鐘面上指針由 12 走到 4 是順時針。" },
+            { text: "順時針，40 度", isCorrect: false, reason: "迷思：誤把走 4 格當成 40 度，一大格是 30 度！" },
+            { text: "順時針，90 度", isCorrect: false, reason: "走 3 大格才是 90 度，走到 4 是 120 度。" }
+          ]
+        },
+        {
+          id: "U3_03",
+          unit: "單元 3",
+          title: "平角角度計算",
+          page: 49,
+          section: "第 4 大題第 (1) 小題",
+          prompt: "平角直線上有相鄰三角，已知其中兩角分別為 50° 和 40°，求未知角 ∠ㄅ 是幾度？",
+          options: [
+            { text: "90 度", isCorrect: true, reason: "正解！平角是 180 度，180° － 50° － 40° ＝ 90°。" },
+            { text: "80 度", isCorrect: false, reason: "減法計算錯誤。" },
+            { text: "0 度", isCorrect: false, reason: "迷思：誤把平角當成直角（90-50-40=0）。" },
+            { text: "100 度", isCorrect: false, reason: "角度計算錯誤。" }
+          ]
+        },
+        {
+          id: "U3_04",
+          unit: "單元 3",
+          title: "角與直角比較",
+          page: 49,
+          section: "第 5 大題第 (2) 小題",
+          prompt: "課本第 49 頁第 5 大題：∠B 比直角（大，小），所以 ∠B 是（鈍角，銳角）？",
+          options: [
+            { text: "比直角大，是鈍角", isCorrect: true, reason: "正解！大於 90 度且小於 180 度的角叫作鈍角。" },
+            { text: "比直角小，是銳角", isCorrect: false, reason: "迷思：圖形張開幅度大於 90 度直角。" },
+            { text: "等於直角，是直角", isCorrect: false, reason: "角度大於 90 度。" },
+            { text: "比平角大，是周角", isCorrect: false, reason: "小於 180 度平角。" }
+          ]
+        },
+        {
+          id: "U3_05",
+          unit: "單元 3",
+          title: "鈍角量角器報讀",
+          page: 48,
+          section: "第 1 大題第 (2) 小題",
+          prompt: "看圖填填看：量角器由 0 度基準線向左開口指向刻度 130，該角是（　　）度？",
+          options: [
+            { text: "130 度", isCorrect: true, reason: "正解！開口大於 90 度直角，讀取 130 度刻度。" },
+            { text: "50 度", isCorrect: false, reason: "迷思：看錯內圈小刻度了，這是一個鈍角不是銳角！" },
+            { text: "150 度", isCorrect: false, reason: "刻度報讀錯誤。" },
+            { text: "90 度", isCorrect: false, reason: "這不是直角。" }
+          ]
+        },
+        {
+          id: "U3_06",
+          unit: "單元 3",
+          title: "鐘面平角旋轉",
+          page: 49,
+          section: "第 3 大題第 (2) 小題",
+          prompt: "下圖鐘面上的指針由 12 走到 6：指針往順時針方向旋轉了幾度？",
+          options: [
+            { text: "180 度", isCorrect: true, reason: "正解！由 12 走到 6 剛好轉了半圈（平角），30° × 6 ＝ 180°。" },
+            { text: "90 度", isCorrect: false, reason: "由 12 走到 3 才是 90 度。" },
+            { text: "360 度", isCorrect: false, reason: "轉一整圈回到 12 才是 360 度。" },
+            { text: "60 度", isCorrect: false, reason: "迷思：誤把 6 大格當成 60 度。" }
+          ]
+        }
+      ],
+
+      // ===== 單元 4：除法 =====
+      unit4: [
+        {
+          id: "U4_01",
+          unit: "單元 4",
+          title: "商是幾位數",
+          page: 62,
+          section: "第 1 大題第 (1) 小題",
+          prompt: "填填看： 57 ) 573 ，商是（　　）位數？",
+          options: [
+            { text: "二 位數", isCorrect: true, reason: "正解！57÷57=1(十位)，個位3不夠除商補0，商為 10(二位數) 餘 3！" },
+            { text: "一 位數", isCorrect: false, reason: "迷思：57÷57=1後，個位3不夠除忘記補0，誤以為商只有 1。" },
+            { text: "三 位數", isCorrect: false, reason: "除數是兩顆位數，被除數 573 商最多為二位數。" },
+            { text: "無法判斷", isCorrect: false, reason: "透過最高位估商可以直接判斷位數。" }
+          ]
+        },
+        {
+          id: "U4_02",
+          unit: "單元 4",
+          title: "除法商補零",
+          page: 62,
+          section: "第 2 大題第 (1) 小題",
+          prompt: "用直式算算看： 3609 ÷ 3 ＝（　　）",
+          options: [
+            { text: "1203", isCorrect: true, reason: "正解！千位商 1、百位商 2、十位 0 不夠除補 0、個位商 3，答案 1203。" },
+            { text: "123", isCorrect: false, reason: "迷思：十位 0 漏補！商少了十位的 0 變成 123。" },
+            { text: "1230", isCorrect: false, reason: "迷思：把 0 補在個位去了。" },
+            { text: "1200", isCorrect: false, reason: "漏除了個位的 9。" }
+          ]
+        },
+        {
+          id: "U4_03",
+          unit: "單元 4",
+          title: "礦泉水平分",
+          page: 63,
+          section: "第 4 大題第 (2) 小題",
+          prompt: "老師準備 72 瓶礦泉水，平分給班上 21 個學生，每人可拿到幾瓶？還剩下幾瓶？",
+          options: [
+            { text: "可拿到 3 瓶，還剩下 9 瓶", isCorrect: true, reason: "正解！72 ÷ 21 ＝ 3 餘 9 (21×3 + 9 = 72，餘數小於除數)。" },
+            { text: "可拿到 4 瓶，還剩下 0 瓶", isCorrect: false, reason: "估商太大：21×4 = 84 > 72，礦泉水不夠分！" },
+            { text: "可拿到 2 瓶，還剩下 30 瓶", isCorrect: false, reason: "迷思：餘數 30 比除數 21 還大，還可以再分 1 瓶！" },
+            { text: "可拿到 3 瓶，還剩下 0 瓶", isCorrect: false, reason: "21×3 = 63，還有剩下 9 瓶。" }
+          ]
+        },
+        {
+          id: "U4_04",
+          unit: "單元 4",
+          title: "三位數除以二位數商位數",
+          page: 62,
+          section: "第 1 大題第 (2) 小題",
+          prompt: "填填看： 40 ) 302 ，商是（　　）位數？",
+          options: [
+            { text: "一 位數", isCorrect: true, reason: "正解！前兩位 30 < 40 不夠除，看前三位 302÷40=7...22，商只有個位(一位數)。" },
+            { text: "二 位數", isCorrect: false, reason: "迷思：誤以為三位數除以二位數一定是二位數。" },
+            { text: "三 位數", isCorrect: false, reason: "商不可能比除數位數還多。" },
+            { text: "無法判斷", isCorrect: false, reason: "前兩位小於除數，商必為一位數。" }
+          ]
+        },
+        {
+          id: "U4_05",
+          unit: "單元 4",
+          title: "除法直式與驗算",
+          page: 62,
+          section: "第 3 大題第 (2) 小題",
+          prompt: "用直式算算看，並驗算： 295 ÷ 42 ＝（　　）…（　　）",
+          options: [
+            { text: "7 … 1", isCorrect: true, reason: "正解！42 × 7 ＝ 294，295 － 294 ＝ 1 (驗算：42×7 + 1 = 295)。" },
+            { text: "6 … 43", isCorrect: false, reason: "迷思：餘數 43 大於除數 42，商估太小了！" },
+            { text: "7 … 0", isCorrect: false, reason: "未減乾淨餘數。" },
+            { text: "8 … 1", isCorrect: false, reason: "商估太大了：42×8=336 > 295。" }
+          ]
+        },
+        {
+          id: "U4_06",
+          unit: "單元 4",
+          title: "戶外教育編隊應用題",
+          page: 63,
+          section: "第 4 大題第 (3) 小題",
+          prompt: "樂天國小有 425 個人參加戶外教育，每 17 個人編成 1 隊，共可編成幾隊？",
+          options: [
+            { text: "25 隊", isCorrect: true, reason: "正解！425 ÷ 17 ＝ 25 隊。" },
+            { text: "24 隊", isCorrect: false, reason: "除法直式退位減法計算錯誤。" },
+            { text: "26 隊", isCorrect: false, reason: "估商太大。" },
+            { text: "15 隊", isCorrect: false, reason: "十位商計算遺漏。" }
+          ]
+        }
+      ],
+
+      // ===== 單元 5：三角形 =====
+      unit5: [
+        {
+          id: "U5_01",
+          unit: "單元 5",
+          title: "三角形角分類",
+          page: 76,
+          section: "第 1 大題第 (1) 小題",
+          prompt: "在（　）裡填入銳角、鈍角或直角三角形：一個圖形的三個角都小於 90 度，是什麼三角形？",
+          options: [
+            { text: "銳角三角形", isCorrect: true, reason: "正解！必須三個角都是銳角，才叫作銳角三角形！" },
+            { text: "鈍角三角形", isCorrect: false, reason: "定義錯誤：有一個角是鈍角才叫鈍角三角形。" },
+            { text: "直角三角形", isCorrect: false, reason: "定義錯誤：有一個角是直角才叫直角三角形。" },
+            { text: "等腰三角形", isCorrect: false, reason: "這是依「邊長」分類，題目是依「角度」分類。" }
+          ]
+        },
+        {
+          id: "U5_02",
+          unit: "單元 5",
+          title: "等腰三角形部位",
+          page: 77,
+          section: "第 3 大題",
+          prompt: "課本第 77 頁等腰三角形：兩條一樣長的邊叫作（　），兩腰所夾的角叫作（　）？",
+          options: [
+            { text: "腰、頂角", isCorrect: true, reason: "正解！兩等長邊為「腰」，兩腰夾角為「頂角」，底邊兩側為「底角」。" },
+            { text: "底邊、底角", isCorrect: false, reason: "部位名稱混淆。" },
+            { text: "腰、底角", isCorrect: false, reason: "兩腰夾的角是頂角，不是底角。" },
+            { text: "頂角、腰", isCorrect: false, reason: "順序相反了。" }
+          ]
+        },
+        {
+          id: "U5_03",
+          unit: "單元 5",
+          title: "全等三角形對應",
+          page: 77,
+          section: "第 4 大題",
+          prompt: "課本第 77 頁全等三角形：頂點 A 的對應點是頂點（　），邊 EF 的對應邊是邊（　）？",
+          options: [
+            { text: "頂點 D、邊 BC", isCorrect: true, reason: "正解！對應頂點為 D，對應邊完全重合為 BC。" },
+            { text: "頂點 E、邊 AB", isCorrect: false, reason: "旋轉疊合對應錯誤。" },
+            { text: "頂點 F、邊 AC", isCorrect: false, reason: "對應點判別錯誤。" },
+            { text: "頂點 D、邊 AC", isCorrect: false, reason: "對應邊看錯。" }
+          ]
+        },
+        {
+          id: "U5_04",
+          unit: "單元 5",
+          title: "等邊三角形連連看",
+          page: 76,
+          section: "第 2 大題連連看",
+          prompt: "課本第 76 頁連連看：三個邊都等長的三角形叫作（　　　）？",
+          options: [
+            { text: "正三角形", isCorrect: true, reason: "正解！三邊等長稱為正三角形（也叫等邊三角形）。" },
+            { text: "等腰三角形", isCorrect: false, reason: "迷思：只有兩邊等長是等腰三角形。" },
+            { text: "直角三角形", isCorrect: false, reason: "正三角形三個角皆為 60 度，不可能是直角三角形。" },
+            { text: "鈍角三角形", isCorrect: false, reason: "正三角形三個角都是銳角。" }
+          ]
+        },
+        {
+          id: "U5_05",
+          unit: "單元 5",
+          title: "角的名稱練習",
+          page: 65,
+          section: "練習題第 3 題",
+          prompt: "寫出「直」角、「銳」角或「鈍」角：大於 90 度且小於 180 度的角是（　　）角？",
+          options: [
+            { text: "鈍角", isCorrect: true, reason: "正解！大於 90° 且小於 180° 的角叫作鈍角。" },
+            { text: "銳角", isCorrect: false, reason: "小於 90° 的角才是銳角。" },
+            { text: "直角", isCorrect: false, reason: "等於 90° 的角才是直角。" },
+            { text: "平角", isCorrect: false, reason: "等於 180° 的角才是平角。" }
+          ]
+        },
+        {
+          id: "U5_06",
+          unit: "單元 5",
+          title: "正三角形內角度數",
+          page: 66,
+          section: "說說看活動",
+          prompt: "課本第 66 頁說說看：正三角形的 3 個角一樣大，每個角都是幾度？",
+          options: [
+            { text: "60 度", isCorrect: true, reason: "正解！正三角形三個內角都是 60 度。" },
+            { text: "90 度", isCorrect: false, reason: "正三角形沒有直角。" },
+            { text: "45 度", isCorrect: false, reason: "角度數值記錯。" },
+            { text: "180 度", isCorrect: false, reason: "180 度是三個角合起來的度數，每個角是 60 度。" }
+          ]
+        }
+      ],
+
+      // ===== 加油小站一：綜合生活應用 =====
+      review: [
+        {
+          id: "REV_01",
+          unit: "加油小站一",
+          title: "國家公園大數比較",
+          page: 78,
+          section: "第 1 大題第 (1) 小題",
+          prompt: "臺灣國家公園遊客人數表：墾丁（4003810）和太魯閣（4828607），哪個國家公園的遊客人數比較多？",
+          options: [
+            { text: "太魯閣 國家公園", isCorrect: true, reason: "正解！太魯閣 4828607 (482萬餘) ＞ 墾丁 4003810 (400萬餘)！" },
+            { text: "墾丁 國家公園", isCorrect: false, reason: "比大小錯誤：400 萬小於 482 萬。" },
+            { text: "兩者一樣多", isCorrect: false, reason: "數值明顯不同。" },
+            { text: "雪霸 國家公園", isCorrect: false, reason: "題目指定比較墾丁與太魯閣。" }
+          ]
+        },
+        {
+          id: "REV_02",
+          unit: "加油小站一",
+          title: "遊客最多國家公園",
+          page: 78,
+          section: "第 1 大題第 (2) 小題",
+          prompt: "看課本第 78 頁遊客人數表，哪個國家公園的遊客人數最多？",
+          options: [
+            { text: "陽明山 國家公園", isCorrect: true, reason: "正解！陽明山遊客人數高達 5288852 人，為五座中最多！" },
+            { text: "太魯閣 國家公園", isCorrect: false, reason: "太魯閣是 4828607 人，少於陽明山的 528 萬人。" },
+            { text: "墾丁 國家公園", isCorrect: false, reason: "墾丁是 4003810 人。" },
+            { text: "金門 國家公園", isCorrect: false, reason: "金門是 2458720 人。" }
+          ]
+        },
+        {
+          id: "REV_03",
+          unit: "加油小站一",
+          title: "世界紀念品匯率乘法",
+          page: 78,
+          section: "第 2 大題第 (1) 小題",
+          prompt: "君君買美國紀念品花 13 美元，1 美元約 31 新臺幣，大約是新臺幣幾元？",
+          options: [
+            { text: "約 403 元", isCorrect: true, reason: "正解！13 × 31 ＝ 403 元。" },
+            { text: "約 393 元", isCorrect: false, reason: "乘法直式計算錯誤。" },
+            { text: "約 44 元", isCorrect: false, reason: "誤用加法 13+31。" },
+            { text: "約 413 元", isCorrect: false, reason: "進位計算錯誤。" }
+          ]
+        },
+        {
+          id: "REV_04",
+          unit: "加油小站一",
+          title: "人參禮盒單價除法",
+          page: 80,
+          section: "第 5 大題第 (1) 小題",
+          prompt: "人參禮盒 3836 元 / 7 入，每 1 小瓶的售價是大約幾元？",
+          options: [
+            { text: "548 元", isCorrect: true, reason: "正解！3836 ÷ 7 ＝ 548 元。" },
+            { text: "542 元", isCorrect: false, reason: "除法直式計算錯誤。" },
+            { text: "558 元", isCorrect: false, reason: "估商計算錯誤。" },
+            { text: "538 元", isCorrect: false, reason: "計算錯誤。" }
+          ]
+        }
+      ]
+    };
+
+    // 機會與命運事件池 (符合四年級校園生活與海線在地風情)
+    
+    // ===== 補給小站專屬任務（100% 南一課本原題與概念，小白板速查任務） =====
+    const GAS_STATION_TASKS = [
+      {
+        id: "GAS_01",
+        title: "除法驗算關係式任務",
+        page: 62,
+        section: "第 3 大題驗算規則",
+        prompt: "請作答者翻開課本第 62 頁，在實體小白板寫出課本上的「除法驗算關係式」（含除數、商、餘數與被除數的運算關係）！",
+        answer: "除數 × 商 ＋ 餘數 ＝ 被除數",
+        gold: 150,
+        move: 0,
+        rewardText: "體力補給金幣 +$150"
+      },
+      {
+        id: "GAS_02",
+        title: "量角器構造速查任務",
+        page: 48,
+        section: "第 1 大題量角器說明",
+        prompt: "請作答者翻開課本第 48 頁，在實體小白板寫出量角器對齊角頂點與角的邊的「兩個關鍵構造名稱」！",
+        answer: "中心點、0度線",
+        gold: 150,
+        move: 0,
+        rewardText: "精力充值金幣 +$150"
+      },
+      {
+        id: "GAS_03",
+        title: "正三角形特徵任務",
+        page: 76,
+        section: "第 2 大題正三角形特徵",
+        prompt: "請作答者翻開課本第 76 頁，在實體小白板畫出一個正三角形，並寫出正三角形的邊長特徵與每個內角的度數！",
+        answer: "3個邊等長、每個角都是60度",
+        gold: 150,
+        move: 0,
+        rewardText: "活力補給金幣 +$150"
+      },
+      {
+        id: "GAS_04",
+        title: "大數位值順序任務",
+        page: 18,
+        section: "第 2 大題位值表",
+        prompt: "請作答者翻開課本第 18 頁，在實體小白板由小到大依序寫出從「萬」到「億」的 5 個位值名稱！",
+        answer: "萬、十萬、百萬、千萬、億",
+        gold: 150,
+        move: 0,
+        rewardText: "算力充電金幣 +$150"
+      },
+      {
+        id: "GAS_05",
+        title: "乘法含零速算任務",
+        page: 30,
+        section: "第 1 大題速算",
+        prompt: "請作答者翻開課本第 30 頁，在實體小白板算出「120 × 30 ＝ ？」並寫出乘法含零速算的過程與最終答案！",
+        answer: "12 × 3 ＝ 36，後面補兩個 0，等於 3600",
+        gold: 150,
+        move: 0,
+        rewardText: "速算充值金幣 +$150"
+      }
+    ];
+
+    // ===== 機會與命運事件任務池（100% 結合課本概念與小白板動手做） =====
+    const CHANCE_EVENTS_WITH_TASKS = [
+      {
+        id: "CH_01",
+        title: "課本筆記工整認證",
+        desc: "老師突擊檢查課本筆記！翻開課本展示工整算式，經裁判確認後即可獲得獎金！",
+        page: 18,
+        section: "課本練習題筆記檢核",
+        prompt: "請作答者翻開課本第 18 頁或第 30 頁，向裁判展示課本上工整書寫的鉛筆練習題算式！",
+        answer: "字跡工整、算式完整無污損",
+        gold: 150,
+        move: 0,
+        rewardText: "獎勵金幣 +$150"
+      },
+      {
+        id: "CH_02",
+        title: "梧棲九降風大衝刺",
+        desc: "受到梧棲九降風強風助力！只要在小白板正確寫出乘法算式，即可順風向前推進 2 步！",
+        page: 31,
+        section: "乘法直式速答",
+        prompt: "受到梧棲九降風助力！請作答者在實體小白板算寫出「8 × 9 ＝ ？」與「7 × 8 ＝ ？」的乘積答案！",
+        answer: "8×9=72、7×8=56",
+        gold: 0,
+        move: 2,
+        rewardText: "順風向前衝刺 2 步"
+      },
+      {
+        id: "CH_03",
+        title: "借用量角器愛心獎",
+        desc: "同學忘了帶量角器，你熱心借出！在小白板畫出一個角並說出角度類型即可領取愛心獎金！",
+        page: 49,
+        section: "第 3 大題角的量測",
+        prompt: "請作答者翻開課本第 49 頁，在實體小白板畫出一個「鈍角」，標示出頂點與兩邊，並寫出鈍角的度數範圍！",
+        answer: "開口大於直角的鈍角（大於90度且小於180度）",
+        gold: 120,
+        move: 0,
+        rewardText: "愛心金幣 +$120"
+      },
+      {
+        id: "CH_04",
+        title: "高美濕地國家公園大數",
+        desc: "戶外教育算出國家公園面積！翻閱課本查出正確名稱即可領取綠能獎金！",
+        page: 78,
+        section: "第 1 大題國家公園面積",
+        prompt: "請作答者翻開課本第 78 頁第 1 大題表格，比對 6 座國家公園面積，在實體小白板寫出「面積最大的國家公園」名稱與面積公頃數！",
+        answer: "玉山國家公園（103121 公頃）",
+        gold: 120,
+        move: 0,
+        rewardText: "綠能獎金 +$120"
+      },
+      {
+        id: "CH_05",
+        title: "除法直式驗算大師",
+        desc: "做完直式主動驗算！在小白板列出課本第 62 頁第 3-(2) 題驗算算式，裁判核對正確領取獎金！",
+        page: 62,
+        section: "第 3 大題第 (2) 小題驗算",
+        prompt: "請作答者翻開課本第 62 頁第 3-(2) 題，在實體小白板列出「295 ÷ 42 ＝ 7 ... 1」的完整除法驗算算式！",
+        answer: "42 × 7 ＋ 1 ＝ 295",
+        gold: 150,
+        move: 0,
+        rewardText: "精算獎勵金幣 +$150"
+      },
+      {
+        id: "CH_06",
+        title: "整理桌面整潔獎",
+        desc: "計算太認真鉛筆芯斷了！只要在小白板寫出大數比較法則，即可免除材料費並領取整潔獎！",
+        page: 19,
+        section: "第 4 大題比大小規則",
+        prompt: "請作答者翻開課本第 19 頁第 4 大題，在實體小白板寫出「多位數比大小」的基本規則（位數不同時怎麼比？位數相同時從哪一位比起？）！",
+        answer: "先比位數，位數多者大；位數相同從最高位比起",
+        gold: 100,
+        move: 0,
+        rewardText: "整潔獎勵金幣 +$100"
+      }
+    ];
+
+    // ===== 順風快進格專屬極速考驗任務 =====
+    const BOOST_TASKS = [
+      {
+        id: "BST_01",
+        title: "正三角形角度極速答",
+        desc: "踩中順風快進格！作答者需在小白板完成速問速答，裁判核對無誤後即可向前推進 2 步！",
+        page: 66,
+        section: "說說看活動",
+        prompt: "請作答者翻開課本第 66 頁「說說看」：在實體小白板寫出正三角形每個內角各是幾度？",
+        answer: "60 度",
+        gold: 0,
+        move: 2,
+        rewardText: "向前推進 2 步"
+      },
+      {
+        id: "BST_02",
+        title: "角的名詞極速答",
+        desc: "踩中順風快進格！作答者需在小白板完成速問速答，裁判核對無誤後即可向前推進 2 步！",
+        page: 65,
+        section: "練習題第 3 題",
+        prompt: "請作答者翻開課本第 65 頁練習題第 3 題：在實體小白板寫出「大於 90 度且小於 180 度」的角是什麼角？",
+        answer: "鈍角",
+        gold: 0,
+        move: 2,
+        rewardText: "向前推進 2 步"
+      },
+      {
+        id: "BST_03",
+        title: "大數進位極速答",
+        desc: "踩中順風快進格！作答者需在小白板完成速問速答，裁判核對無誤後即可向前推進 2 步！",
+        page: 18,
+        section: "第 2 大題第 (4) 小題",
+        prompt: "請作答者翻開課本第 18 頁第 2-(4) 題：在實體小白板算出「5999000 再多 1 萬是幾？」並寫出計算答案！",
+        answer: "6009000",
+        gold: 0,
+        move: 2,
+        rewardText: "向前推進 2 步"
+      }
+    ];
+
+    const CHANCE_EVENTS = [
+      { title: "課本筆記工整", desc: "老師檢查實體課本，發現你的練習題字跡工整、算式完整！獲得獎勵金幣 $150！", gold: 150, move: 0 },
+      { title: "順風大衝刺", desc: "受到梧棲九降風助力，思緒清晰！向前快進 2 格！", gold: 0, move: 2 },
+      { title: "熱心助人", desc: "把備用量角器借給忘了帶的同學，獲得老師熱心表揚！金幣 +$100！", gold: 100, move: 0 },
+      { title: "高美濕地戶外教學", desc: "算出高美濕地風力發電機的發電度數乘法，獲得綠能獎金 $120！", gold: 120, move: 0 },
+      { title: "計算驗算成功", desc: "做完除法直式後細心用「除數×商＋餘數」驗算無誤！獎勵 $150！", gold: 150, move: 0 },
+      { title: "鉛筆斷芯整理桌面", desc: "計算太用力鉛筆芯斷了，削鉛筆整理桌面，支付材料費 $50。", gold: -50, move: 0 }
+    ];
+
+    /* ============================================================
+       3. 20 格環狀棋盤配置（每個題目格對應特定單元題庫池）
+       ============================================================ */
+    const TILES = [
+      // Top Row (Row 1, Cols 1..7) - 7 格
+      { id: 0, type: "start", name: "🚩 起點", tag: "獎勵站", desc: "經過或停留領取 $200 金幣", row: 1, col: 1, owner: null },
+      { id: 1, type: "quiz", unitCategory: "unit1", name: "單元 1 大數", tag: "單元 1", price: 200, rent: 80, row: 1, col: 2, owner: null },
+      { id: 2, type: "chance", name: "🍀 機會命運", tag: "事件格", desc: "抽取隨機好運卡", row: 1, col: 3, owner: null },
+      { id: 3, type: "quiz", unitCategory: "unit1", name: "單元 1 讀寫", tag: "單元 1", price: 220, rent: 90, row: 1, col: 4, owner: null },
+      { id: 4, type: "boost", name: "⚡ 順風快進", tag: "加速格", desc: "翻書神速！直接向前推進 2 步！", row: 1, col: 5, owner: null },
+      { id: 5, type: "quiz", unitCategory: "unit2", name: "單元 2 乘法", tag: "單元 2", price: 260, rent: 100, row: 1, col: 6, owner: null },
+      { id: 6, type: "chance", name: "🍀 機會命運", tag: "事件格", desc: "抽取隨機好運卡", row: 1, col: 7, owner: null },
+
+      // Right Column (Col 7, Rows 2..4) - 3 格
+      { id: 7, type: "quiz", unitCategory: "unit2", name: "單元 2 直式", tag: "單元 2", price: 280, rent: 110, row: 2, col: 7, owner: null },
+      { id: 8, type: "gas", name: "⛽ 加油小站", tag: "補給格", desc: "休息充電！獲得金幣 $150 補給", row: 3, col: 7, owner: null },
+      { id: 9, type: "quiz", unitCategory: "unit3", name: "單元 3 量角", tag: "單元 3", price: 320, rent: 130, row: 4, col: 7, owner: null },
+
+      // Bottom Row (Row 5, Cols 7..1) - 7 格
+      { id: 10, type: "quiz", unitCategory: "unit3", name: "單元 3 旋轉", tag: "單元 3", price: 340, rent: 140, row: 5, col: 7, owner: null },
+      { id: 11, type: "chance", name: "🍀 機會命運", tag: "事件格", desc: "抽取隨機好運卡", row: 5, col: 6, owner: null },
+      { id: 12, type: "quiz", unitCategory: "unit4", name: "單元 4 估商", tag: "單元 4", price: 360, rent: 150, row: 5, col: 5, owner: null },
+      { id: 13, type: "boost", name: "⚡ 順風快進", tag: "加速格", desc: "神算加持！向前衝刺 2 步！", row: 5, col: 4, owner: null },
+      { id: 14, type: "quiz", unitCategory: "unit4", name: "單元 4 補零", tag: "單元 4", price: 380, rent: 160, row: 5, col: 3, owner: null },
+      { id: 15, type: "quiz", unitCategory: "unit4", name: "單元 4 應用", tag: "單元 4", price: 400, rent: 170, row: 5, col: 2, owner: null },
+      { id: 16, type: "chance", name: "🍀 機會命運", tag: "事件格", desc: "抽取隨機好運卡", row: 5, col: 1, owner: null },
+
+      // Left Column (Col 1, Rows 4..2) - 3 格
+      { id: 17, type: "quiz", unitCategory: "unit5", name: "單元 5 角分類", tag: "單元 5", price: 420, rent: 180, row: 4, col: 1, owner: null },
+      { id: 18, type: "quiz", unitCategory: "unit5", name: "單元 5 等腰", tag: "單元 5", price: 450, rent: 190, row: 3, col: 1, owner: null },
+      { id: 19, type: "quiz", unitCategory: "review", name: "綜合 國家公園", tag: "統整活動", price: 500, rent: 200, row: 2, col: 1, owner: null }
+    ];
+
+    /* ============================================================
+       4. 隨機題目管理與每輪換頁機制 (Round & Randomness Engine)
+       ============================================================ */
+    // 用於記錄每個單元「尚未出過」的題目隊列，保證每輪換頁換題且隨機
+    const questionDrawManager = {
+      pools: {},
+
+      init() {
+        for (const cat in UNIT_QUESTION_POOLS) {
+          this.pools[cat] = [...UNIT_QUESTION_POOLS[cat]].sort(() => Math.random() - 0.5);
+        }
+      },
+
+      drawQuestion(cat) {
+        if (!this.pools[cat] || this.pools[cat].length === 0) {
+          // 若該單元題目已出完，重新洗牌補充，維持隨機循環
+          this.pools[cat] = [...UNIT_QUESTION_POOLS[cat]].sort(() => Math.random() - 0.5);
+        }
+        return this.pools[cat].pop();
+      }
+    };
+
+    /* ============================================================
+       5. 遊戲核心狀態管理 (Game State)
+       ============================================================ */
+    const gameState = {
+      p1: { seat: null, name: "紅隊探險家", gold: 1000, pos: 0, laps: 1, lands: [] },
+      p2: { seat: null, name: "藍隊大富翁", gold: 1000, pos: 0, laps: 1, lands: [] },
+      currentTurn: 1,
+      isRolling: false,
+      isAnswering: false,
+      currentQuizAnsweredCorrectly: false,
+      isSuddenDeath: false,
+      gameDurationMinutes: 30,
+      totalSecondsLeft: 1800,
+      timerInterval: null,
+      qTimerInterval: null,
+      currentQuiz: null,
+      currentTile: null,
+      penaltyState: null,
+      isUrgent: false,
+      isGameOver: false
+    };
+
+    /* ============================================================
+       6. 初始化與 DOM 綁定
+       ============================================================ */
+    document.addEventListener("DOMContentLoaded", () => {
+      questionDrawManager.init();
+      buildSeatOptions();
+      renderBoard();
+      setupEventListeners();
+      document.getElementById("setupModal").classList.remove("hidden");
+    });
+
+    // 建立 1~28 號下拉選單
+    function buildSeatOptions() {
+      const p1Select = document.getElementById("p1SeatSelect");
+      const p2Select = document.getElementById("p2SeatSelect");
+      p1Select.innerHTML = '<option value="">-- 請選擇 1 ~ 28 號 --</option>';
+      p2Select.innerHTML = '<option value="">-- 請選擇 1 ~ 28 號 --</option>';
+
+      for (let i = 1; i <= 28; i++) {
+        const opt1 = document.createElement("option");
+        opt1.value = i;
+        opt1.textContent = `${i} 號 同學`;
+        p1Select.appendChild(opt1);
+
+        const opt2 = document.createElement("option");
+        opt2.value = i;
+        opt2.textContent = `${i} 號 同學`;
+        p2Select.appendChild(opt2);
+      }
+    }
+
+    // 取得棋格對應的 3D 生成圖標
+    function getTileIcon(tile) {
+      if (!tile) return "assets/tile_chance.jpg";
+      if (tile.type === "start") return "assets/tile_start.jpg";
+      if (tile.type === "chance") return "assets/tile_chance.jpg";
+      if (tile.type === "gas") return "assets/tile_gas.jpg";
+      if (tile.type === "boost") return "assets/tile_start.jpg";
+      if (tile.unitCategory === "unit1") return "assets/unit_ch1.jpg";
+      if (tile.unitCategory === "unit2") return "assets/unit_ch2.jpg";
+      if (tile.unitCategory === "unit3") return "assets/unit_ch3.jpg";
+      if (tile.unitCategory === "unit4") return "assets/unit_ch4.jpg";
+      if (tile.unitCategory === "unit5") return "assets/unit_ch5.jpg";
+      if (tile.unitCategory === "review") return "assets/unit_review.jpg";
+      return "assets/tile_chance.jpg";
+    }
+
+    // 渲染 20 格環狀棋盤
+    function renderBoard() {
+      const grid = document.getElementById("boardGrid");
+      const existingTiles = grid.querySelectorAll(".tile");
+      existingTiles.forEach(t => t.remove());
+
+      TILES.forEach(tile => {
+        const tileDiv = document.createElement("div");
+        tileDiv.className = "tile";
+        tileDiv.id = `tile-${tile.id}`;
+        tileDiv.style.gridRow = tile.row;
+        tileDiv.style.gridColumn = tile.col;
+
+        let tagClass = "tag-special";
+        if (tile.tag.includes("單元 1")) tagClass = "tag-ch1";
+        else if (tile.tag.includes("單元 2")) tagClass = "tag-ch2";
+        else if (tile.tag.includes("單元 3")) tagClass = "tag-ch3";
+        else if (tile.tag.includes("單元 4")) tagClass = "tag-ch4";
+        else if (tile.tag.includes("單元 5")) tagClass = "tag-ch5";
+
+        let priceHtml = "";
+        if (tile.price) {
+          priceHtml = `<div class="tile-price">💰$${tile.price} (租$${tile.rent})</div>`;
+        } else if (tile.desc) {
+          priceHtml = `<div style="font-size: 11.5px; font-weight: 800; color: #475569; line-height: 1.15;">${tile.desc}</div>`;
+        }
+
+        const iconPath = getTileIcon(tile);
+
+        tileDiv.innerHTML = `
+          <div class="tile-tag ${tagClass}">${tile.tag}</div>
+          <img src="${iconPath}" class="tile-thumb" alt="${tile.name}" />
+          <div class="tile-name">${tile.name}</div>
+          ${priceHtml}
+          <div class="piece-container" id="piece-box-${tile.id}"></div>
+        `;
+
+        grid.appendChild(tileDiv);
+      });
+
+      updatePiecesDisplay();
+    }
+
+    // 更新棋子位置
+    function updatePiecesDisplay() {
+      TILES.forEach(t => {
+        const box = document.getElementById(`piece-box-${t.id}`);
+        if (box) box.innerHTML = "";
+      });
+
+      const p1Box = document.getElementById(`piece-box-${gameState.p1.pos}`);
+      if (p1Box) {
+        const p1Piece = document.createElement("div");
+        p1Piece.className = "piece piece-p1";
+        p1Piece.title = `紅隊 (${gameState.p1.seat || "P1"} 號)`;
+        p1Box.appendChild(p1Piece);
+      }
+
+      const p2Box = document.getElementById(`piece-box-${gameState.p2.pos}`);
+      if (p2Box) {
+        const p2Piece = document.createElement("div");
+        p2Piece.className = "piece piece-p2";
+        p2Piece.title = `藍隊 (${gameState.p2.seat || "P2"} 號)`;
+        p2Box.appendChild(p2Piece);
+      }
+    }
+
+    // 事件監聽綁定
+    function setupEventListeners() {
+      // 規則說明彈窗
+      const openRules = () => document.getElementById("rulesModal").classList.remove("hidden");
+      const closeRules = () => document.getElementById("rulesModal").classList.add("hidden");
+      document.getElementById("rulesBtn").addEventListener("click", openRules);
+      document.getElementById("openDetailedRulesBtn").addEventListener("click", openRules);
+      document.getElementById("closeRulesBtn").addEventListener("click", closeRules);
+      document.getElementById("startFromRulesBtn").addEventListener("click", closeRules);
+
+      document.getElementById("startGameBtn").addEventListener("click", handleStartGame);
+      document.getElementById("diceBtn").addEventListener("click", handleRollDice);
+      document.getElementById("soundToggleBtn").addEventListener("click", toggleSound);
+      document.getElementById("leaderboardBtn").addEventListener("click", openLeaderboard);
+      document.getElementById("viewHistoryFromSetup").addEventListener("click", openLeaderboard);
+      document.getElementById("viewHistoryFromSettle").addEventListener("click", openLeaderboard);
+      document.getElementById("closeLeaderboardBtn").addEventListener("click", closeLeaderboard);
+      document.getElementById("backToGameBtn").addEventListener("click", closeLeaderboard);
+      document.getElementById("clearHistoryBtn").addEventListener("click", clearLeaderboard);
+      document.getElementById("settleNowBtn").addEventListener("click", () => {
+        if (confirm("確定要提早結算目前的資產與排行榜嗎？")) {
+          endGameAndSettle();
+        }
+      });
+      document.getElementById("playAgainBtn").addEventListener("click", resetToSetup);
+      // 事件/補給任務裁判認證
+      document.getElementById("eventPassBtn").addEventListener("click", () => handleEventTaskVerdict(true));
+      document.getElementById("eventFailBtn").addEventListener("click", () => handleEventTaskVerdict(false));
+
+      document.getElementById("eventConfirmBtn").addEventListener("click", () => {
+        document.getElementById("eventModal").classList.add("hidden");
+        const task = gameState.currentEventTask;
+        const player = gameState.currentEventPlayer;
+        const passed = gameState.currentEventPassed;
+
+        if (passed && task && task.move && task.move > 0) {
+          flashNotice(`⚡ 順風快進！向前推進 ${task.move} 步！`);
+          setTimeout(() => {
+            stepMovePlayer(player, task.move, () => handleTileArrival(player));
+          }, 400);
+        } else {
+          switchTurn();
+        }
+      });
+
+      // 裁判審查按鈕
+      document.getElementById("btnReviewAgree").addEventListener("click", () => handleRefereeVerdict(true));
+      document.getElementById("btnReviewReject").addEventListener("click", () => handleRefereeVerdict(false));
+
+      // 買地與跳過
+      document.getElementById("buyLandBtn").addEventListener("click", handleBuyLand);
+      document.getElementById("skipBuyBtn").addEventListener("click", () => {
+        document.getElementById("landActionGroup").classList.add("hidden");
+        const nextBtn = document.getElementById("nextTurnBtn");
+        nextBtn.textContent = "➡️ 換下一位玩家擲骰";
+        nextBtn.classList.remove("hidden");
+      });
+
+      // 互審選擇按鈕：裁判審查作答者
+      document.getElementById("p1ReviewPassBtn").addEventListener("click", () => {
+        if (!gameState.penaltyState || gameState.penaltyState.isFinished) return;
+        gameState.penaltyState.p1PassedThisRound = true;
+        document.getElementById("p1ReviewPassBtn").className = "review-choice-btn selected-pass";
+        document.getElementById("p1ReviewFailBtn").className = "review-choice-btn";
+        sound.click();
+      });
+      document.getElementById("p1ReviewFailBtn").addEventListener("click", () => {
+        if (!gameState.penaltyState || gameState.penaltyState.isFinished) return;
+        gameState.penaltyState.p1PassedThisRound = false;
+        document.getElementById("p1ReviewPassBtn").className = "review-choice-btn";
+        document.getElementById("p1ReviewFailBtn").className = "review-choice-btn selected-fail";
+        sound.click();
+      });
+
+      // 互審選擇按鈕：作答者審查裁判
+      document.getElementById("p2ReviewPassBtn").addEventListener("click", () => {
+        if (!gameState.penaltyState || gameState.penaltyState.isFinished) return;
+        gameState.penaltyState.p2PassedThisRound = true;
+        document.getElementById("p2ReviewPassBtn").className = "review-choice-btn selected-pass";
+        document.getElementById("p2ReviewFailBtn").className = "review-choice-btn";
+        sound.click();
+      });
+      document.getElementById("p2ReviewFailBtn").addEventListener("click", () => {
+        if (!gameState.penaltyState || gameState.penaltyState.isFinished) return;
+        gameState.penaltyState.p2PassedThisRound = false;
+        document.getElementById("p2ReviewPassBtn").className = "review-choice-btn";
+        document.getElementById("p2ReviewFailBtn").className = "review-choice-btn selected-fail";
+        sound.click();
+      });
+
+      // 送出互審結果按鈕
+      document.getElementById("submitMutualReviewBtn").addEventListener("click", () => {
+        const state = gameState.penaltyState;
+        if (!state || state.isFinished) return;
+
+        if (state.p1PassedThisRound === null || state.p2PassedThisRound === null) {
+          flashNotice("⚠️ 請雙方裁判皆完成對對手小白板的審查（請點選 通過 或 未通過）！");
+          sound.wrong();
+          return;
+        }
+
+        const currentPlayer = gameState.currentTurn === 1 ? gameState.p1 : gameState.p2;
+        const refereePlayer = gameState.currentTurn === 1 ? gameState.p2 : gameState.p1;
+        const round = state.round;
+
+        const verdictBox = document.getElementById("penaltyVerdictBox");
+        const nextRoundBtn = document.getElementById("penaltyNextRoundBtn");
+        const doneBtn = document.getElementById("penaltyDoneBtn");
+        const submitBtn = document.getElementById("submitMutualReviewBtn");
+
+        if (state.p1PassedThisRound === true && state.p2PassedThisRound === true) {
+          // ===== 兩人同時審查對方都通過 =====
+          sound.fanfare();
+          state.isFinished = true;
+          submitBtn.classList.add("hidden");
+
+          verdictBox.className = "feedback-box feedback-success";
+          verdictBox.style.marginTop = "8px";
+          verdictBox.innerHTML = `
+            <div style="font-size: 18px; font-weight: 900;">🎉 雙方互審皆通過！第 ${round} 輪處罰順利解除！</div>
+            <div style="margin-top: 8px; font-size: 24px; line-height: 1.6;">
+              兩位同學在實體小白板上均確實翻查課本並列出正確計算！<br>
+              學習態度優良，<b>免受任何金額扣款</b>！請點選下方按鈕繼續遊戲！
+            </div>
+          `;
+          verdictBox.classList.remove("hidden");
+
+          doneBtn.style.background = "#16a34a";
+          doneBtn.textContent = "🎉 處罰已解除・繼續遊戲";
+          doneBtn.classList.remove("hidden");
+          doneBtn.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+        } else {
+          // ===== 至少一人未通過 =====
+          if (!state.p1PassedThisRound) state.p1Fails++;
+          if (!state.p2PassedThisRound) state.p2Fails++;
+
+          document.getElementById("penaltyFailCounts").textContent = `累計未通過：${currentPlayer.name} ${state.p1Fails} 次 ｜ ${refereePlayer.name} ${state.p2Fails} 次`;
+
+          if (round < 3) {
+            // 進入下一輪處罰 (第 2 或第 3 輪)
+            sound.wrong();
+            submitBtn.classList.add("hidden");
+
+            verdictBox.className = "feedback-box feedback-error";
+            verdictBox.style.marginTop = "8px";
+            verdictBox.innerHTML = `
+              <div style="font-size: 18px; font-weight: 900;">❌ 第 ${round} 輪未全員通過！</div>
+              <div style="margin-top: 8px; font-size: 24px; line-height: 1.6;">
+                本輪審查結果：【${currentPlayer.name}】${state.p1PassedThisRound ? '通過 ✅' : '未通過 ❌'} ｜ 
+                【${refereePlayer.name}】${state.p2PassedThisRound ? '通過 ✅' : '未通過 ❌'}<br>
+                依規則抽換<b>全新課本題目</b>，請點擊下方按鈕進入第 ${round + 1} 輪處罰！
+              </div>
+            `;
+            verdictBox.classList.remove("hidden");
+
+            nextRoundBtn.textContent = `🔄 抽換全新題目・進入第 ${round + 1} 輪處罰`;
+            nextRoundBtn.classList.remove("hidden");
+            nextRoundBtn.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+          } else {
+            // 三輪都未通過：依規則僅處罰沒通過最多次的那位，若次數一樣則一起處罰，第三輪後強制結束
+            sound.wrong();
+            state.isFinished = true;
+            submitBtn.classList.add("hidden");
+
+            let penaltyMoneyMsg = "";
+            if (state.p1Fails > state.p2Fails) {
+              currentPlayer.gold = Math.max(0, currentPlayer.gold - 100);
+              penaltyMoneyMsg = `🚨 三輪處罰結束！【${currentPlayer.name}】累計未通過 <b>${state.p1Fails}</b> 次（多於【${refereePlayer.name}】的 ${state.p2Fails} 次）！<br>💰 依規則僅處罰未通過最多次者：【${currentPlayer.name}】扣除金幣 <b>-$100</b>！<br>🌟【${refereePlayer.name}】表現較佳，免除扣款！`;
+            } else if (state.p2Fails > state.p1Fails) {
+              refereePlayer.gold = Math.max(0, refereePlayer.gold - 100);
+              penaltyMoneyMsg = `🚨 三輪處罰結束！【${refereePlayer.name}】累計未通過 <b>${state.p2Fails}</b> 次（多於【${currentPlayer.name}】的 ${state.p1Fails} 次）！<br>💰 依規則僅處罰未通過最多次者：【${refereePlayer.name}】扣除金幣 <b>-$100</b>！<br>🌟【${currentPlayer.name}】表現較佳，免除扣款！`;
+            } else {
+              currentPlayer.gold = Math.max(0, currentPlayer.gold - 100);
+              refereePlayer.gold = Math.max(0, refereePlayer.gold - 100);
+              penaltyMoneyMsg = `🚨 三輪處罰結束！兩人累計未通過次數相同（各 <b>${state.p1Fails}</b> 次）！<br>💰 依規則雙方一同處罰：各扣除金幣 <b>-$100</b>！`;
+            }
+            updatePlayerStatsUI();
+
+            verdictBox.className = "feedback-box feedback-error";
+            verdictBox.style.marginTop = "8px";
+            verdictBox.innerHTML = `
+              <div style="font-size: 18px; font-weight: 900;">🛑 第三輪處罰已達上限，已實施金額處罰並強制結束！</div>
+              <div style="margin-top: 8px; font-size: 24px; line-height: 1.6;">
+                ${penaltyMoneyMsg}
+              </div>
+            `;
+            verdictBox.classList.remove("hidden");
+
+            doneBtn.style.background = "#475569";
+            doneBtn.textContent = "🔚 第三輪結束・強制結束處罰回到遊戲";
+            doneBtn.classList.remove("hidden");
+            doneBtn.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          }
+        }
+      });
+
+      // 進入下一輪處罰按鈕
+      document.getElementById("penaltyNextRoundBtn").addEventListener("click", () => {
+        if (!gameState.penaltyState || gameState.penaltyState.isFinished) return;
+        startPenaltyRound(gameState.penaltyState.round + 1);
+      });
+
+      // 解除處罰或強制結束按鈕
+      document.getElementById("penaltyDoneBtn").addEventListener("click", () => {
+        document.getElementById("questionModal").classList.add("hidden");
+        flashNotice("📝 兩位小朋友完成處罰審查，繼續前進！");
+        switchTurn();
+      });
+
+      document.getElementById("nextTurnBtn").addEventListener("click", () => {
+        document.getElementById("questionModal").classList.add("hidden");
+        switchTurn();
+      });
+    }
+
+    /* ============================================================
+       7. 開局與計時器管理 (30~35 分鐘 & 最後 5 分鐘警報)
+       ============================================================ */
+    function handleStartGame() {
+      const p1Seat = document.getElementById("p1SeatSelect").value;
+      const p2Seat = document.getElementById("p2SeatSelect").value;
+      const duration = parseInt(document.getElementById("durationSelect").value, 10);
+
+      if (!p1Seat || !p2Seat) {
+        alert("請兩位小朋友都選取自己的座號 (1~28 號) 後再開始！");
+        return;
+      }
+      if (p1Seat === p2Seat) {
+        alert("兩位玩家不能選擇同一個座號喔！請重新確認。");
+        return;
+      }
+
+      gameState.p1.seat = p1Seat;
+      gameState.p1.name = `紅隊 (${p1Seat}號)`;
+      gameState.p2.seat = p2Seat;
+      gameState.p2.name = `藍隊 (${p2Seat}號)`;
+      gameState.gameDurationMinutes = duration;
+      gameState.totalSecondsLeft = duration * 60;
+      gameState.isGameOver = false;
+
+      document.getElementById("p1Title").textContent = gameState.p1.name;
+      document.getElementById("p1SeatDisplay").textContent = `座號：${p1Seat} 號`;
+      document.getElementById("p2Title").textContent = gameState.p2.name;
+      document.getElementById("p2SeatDisplay").textContent = `座號：${p2Seat} 號`;
+
+      document.getElementById("setupModal").classList.add("hidden");
+      sound.fanfare();
+
+      startGlobalGameTimer();
+      updateTurnUI();
+    }
+
+    function startGlobalGameTimer() {
+      if (gameState.timerInterval) clearInterval(gameState.timerInterval);
+      updateTimerDisplay();
+
+      gameState.timerInterval = setInterval(() => {
+        if (gameState.totalSecondsLeft <= 0) {
+          clearInterval(gameState.timerInterval);
+          endGameAndSettle();
+          return;
+        }
+
+        gameState.totalSecondsLeft--;
+        updateTimerDisplay();
+
+        if (gameState.totalSecondsLeft <= 300 && !gameState.isUrgent) {
+          gameState.isUrgent = true;
+          document.getElementById("gameTimerDisplay").classList.add("urgent");
+          document.getElementById("urgentBanner").style.display = "block";
+          sound.wrong();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const m = Math.floor(gameState.totalSecondsLeft / 60);
+      const s = gameState.totalSecondsLeft % 60;
+      const mStr = m < 10 ? `0${m}` : `${m}`;
+      const sStr = s < 10 ? `0${s}` : `${s}`;
+      document.getElementById("timerText").textContent = `${mStr}:${sStr}`;
+    }
+
+    /* ============================================================
+       8. 擲骰子與移動棋子（保證 4 輪節奏）
+       ============================================================ */
+    function handleRollDice() {
+      if (gameState.isRolling || gameState.isGameOver) return;
+      gameState.isRolling = true;
+
+      const diceBtn = document.getElementById("diceBtn");
+      diceBtn.disabled = true;
+      diceBtn.classList.add("dice-rolling");
+      sound.dice();
+
+      const currentPlayer = gameState.currentTurn === 1 ? gameState.p1 : gameState.p2;
+      const rollValue = Math.floor(Math.random() * 4) + 1;
+      const histPill = document.getElementById("diceHistoryPill");
+      if (histPill) histPill.textContent = `🎲 上次擲出：【 ${rollValue} 步 】`;
+
+      setTimeout(() => {
+        diceBtn.classList.remove("dice-rolling");
+        const diceEmojis = ["⚀", "⚁", "⚂", "⚃"];
+        diceBtn.textContent = diceEmojis[rollValue - 1];
+
+        document.getElementById("actionHint").textContent = `${currentPlayer.name} 擲出了 ${rollValue} 點！向前邁進！`;
+
+        stepMovePlayer(currentPlayer, rollValue, () => {
+          gameState.isRolling = false;
+          diceBtn.disabled = false;
+          handleTileArrival(currentPlayer);
+        });
+      }, 600);
+    }
+
+    function stepMovePlayer(player, remainingSteps, onComplete) {
+      if (remainingSteps <= 0) {
+        onComplete();
+        return;
+      }
+
+      const prevPos = player.pos;
+      player.pos = (player.pos + 1) % TILES.length;
+
+      if (player.pos === 0 && prevPos !== 0) {
+        player.laps++;
+        player.gold += 200;
+        sound.buy();
+        flashNotice(`${player.name} 順利繞完一圈！領取起點獎勵金幣 $200！`);
+        updatePlayerStatsUI();
+      }
+
+      sound.move();
+      updatePiecesDisplay();
+
+      setTimeout(() => {
+        stepMovePlayer(player, remainingSteps - 1, onComplete);
+      }, 250);
+    }
+
+    // 抵達格子事件處置
+    function handleTileArrival(player) {
+      const tile = TILES[player.pos];
+      gameState.currentTile = tile;
+
+      const tileEl = document.getElementById(`tile-${tile.id}`);
+      if (tileEl) {
+        tileEl.classList.add("active-highlight");
+        setTimeout(() => tileEl.classList.remove("active-highlight"), 1200);
+      }
+
+      if (tile.type === "start") {
+        flashNotice("抵達起點！整備隊伍，準備迎戰下一輪！");
+        switchTurn();
+      } else if (tile.type === "boost") {
+        openBoostModal(player);
+      } else if (tile.type === "gas") {
+        openGasStationModal(player);
+      } else if (tile.type === "chance") {
+        openChanceEventModal(player);
+      } else if (tile.type === "quiz") {
+        const opponentTurn = gameState.currentTurn === 1 ? 2 : 1;
+        const opponent = gameState.currentTurn === 1 ? gameState.p2 : gameState.p1;
+        const isOpponentLand = (tile.owner === opponentTurn);
+        const isMyLand = (tile.owner === gameState.currentTurn);
+
+        if (isOpponentLand) {
+          sound.toll();
+          const rent = tile.rent;
+          player.gold = Math.max(0, player.gold - rent);
+          opponent.gold += rent;
+          updatePlayerStatsUI();
+          flashNotice(`⚠️ 踩到 ${opponent.name} 的地盤【${tile.name}】！支付過路費 $${rent}！`);
+        } else if (isMyLand) {
+          flashNotice(`🏰 抵達自己的領地【${tile.name}】！免付過路費，翻書挑戰賺取獎勵金！`);
+        }
+
+        setTimeout(() => {
+          openQuestionModal(tile);
+        }, 600);
+      }
+    }
+
+    /* ============================================================
+       9. 課本翻書解題核心邏輯（每輪隨機更換頁數與題型）
+       ============================================================ */
+    // 從指定單元題庫中抽出 2 道不同之課本原題供小白板罰寫訓練（100% 教材原文搬運，避開已抽過題號）
+    function getTwoDistinctPenaltyQuestions(unitCat, excludeIds = []) {
+      const cat = unitCat || "unit1";
+      const basePool = UNIT_QUESTION_POOLS[cat] || UNIT_QUESTION_POOLS["unit1"];
+      const combined = [...basePool, ...(UNIT_QUESTION_POOLS["review1"] || [])];
+      const filtered = combined.filter(q => !excludeIds.includes(q.id));
+      const poolToUse = filtered.length >= 2 ? filtered : combined;
+      const shuffled = [...poolToUse].sort(() => Math.random() - 0.5);
+      const q1 = shuffled[0] || basePool[0];
+      const q2 = (shuffled.length > 1 ? shuffled[1] : poolToUse.find(q => q.id !== q1.id)) || basePool[1] || basePool[0];
+      return [q1, q2];
+    }
+
+    // 啟動指定輪次的雙人互審處罰
+    function startPenaltyRound(round) {
+      const state = gameState.penaltyState;
+      if (!state) return;
+      state.round = round;
+      state.p1PassedThisRound = null;
+      state.p2PassedThisRound = null;
+
+      const currentPlayer = gameState.currentTurn === 1 ? gameState.p1 : gameState.p2;
+      const refereePlayer = gameState.currentTurn === 1 ? gameState.p2 : gameState.p1;
+
+      // 抽出 2 道全新且不重複的課本原題
+      const [pQ1, pQ2] = getTwoDistinctPenaltyQuestions(state.unitCategory, state.excludeIds);
+      state.excludeIds.push(pQ1.id, pQ2.id);
+
+      const pCard = document.getElementById("penaltyCard");
+      document.getElementById("penaltyRoundBadge").textContent = `第 ${round} / 3 輪處罰`;
+      document.getElementById("penaltyFailCounts").textContent = `累計未通過：${currentPlayer.name} ${state.p1Fails} 次 ｜ ${refereePlayer.name} ${state.p2Fails} 次`;
+      document.getElementById("penaltyStatusMsg").textContent = `第 ${round} 輪：兩位同學請翻閱課本例題，在小白板列出算式後互相審查！`;
+
+      // 作答者小白板題 (完全不揭露解答，避免抄寫)
+      document.getElementById("penaltyAnswererTitle").textContent = `👤 作答者【${currentPlayer.name}】小白板題`;
+      document.getElementById("penaltyAnswererPage").textContent = `📖 南一課本 第 ${pQ1.page} 頁 ${pQ1.section}`;
+      document.getElementById("penaltyAnswererPrompt").textContent = pQ1.prompt;
+      document.getElementById("penaltyReviewerLabel1").textContent = `🔍 請裁判【${refereePlayer.name}】翻書審查此題：`;
+
+      // 裁判監督小白板題 (完全不揭露解答，避免抄寫)
+      document.getElementById("penaltyRefereeTitle").textContent = `🔍 裁判監督【${refereePlayer.name}】小白板題`;
+      document.getElementById("penaltyRefereePage").textContent = `📖 南一課本 第 ${pQ2.page} 頁 ${pQ2.section}`;
+      document.getElementById("penaltyRefereePrompt").textContent = pQ2.prompt;
+      document.getElementById("penaltyReviewerLabel2").textContent = `👤 請作答者【${currentPlayer.name}】翻書審查此題：`;
+
+      // 重設互審選擇按鈕樣式
+      const p1Pass = document.getElementById("p1ReviewPassBtn");
+      const p1Fail = document.getElementById("p1ReviewFailBtn");
+      const p2Pass = document.getElementById("p2ReviewPassBtn");
+      const p2Fail = document.getElementById("p2ReviewFailBtn");
+
+      p1Pass.className = "review-choice-btn";
+      p1Fail.className = "review-choice-btn";
+      p2Pass.className = "review-choice-btn";
+      p2Fail.className = "review-choice-btn";
+
+      // 介面按鈕顯示/隱藏
+      const submitBtn = document.getElementById("submitMutualReviewBtn");
+      submitBtn.classList.remove("hidden");
+      submitBtn.textContent = `⚖️ 雙方已在小白板算完・送出第 ${round} 輪互審結果`;
+
+      document.getElementById("penaltyVerdictBox").classList.add("hidden");
+      document.getElementById("penaltyNextRoundBtn").classList.add("hidden");
+      document.getElementById("penaltyDoneBtn").classList.add("hidden");
+
+      pCard.classList.remove("hidden");
+      pCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    function openQuestionModal(tile) {
+      gameState.isAnswering = false;
+      gameState.currentQuizAnsweredCorrectly = false;
+      gameState.currentSelectedOpt = null;
+      gameState.pendingBuyer = null;
+
+      // 從該單元池隨機抽出一道題目，確保每輪換頁換題！
+      const category = tile.unitCategory || "unit1";
+      const q = questionDrawManager.drawQuestion(category);
+      if (!q) {
+        switchTurn();
+        return;
+      }
+
+      gameState.currentQuiz = q;
+
+      const badgeImg = document.getElementById("qUnitBadge");
+      if (badgeImg) badgeImg.src = getTileIcon(tile);
+      const currentPlayer = gameState.currentTurn === 1 ? gameState.p1 : gameState.p2;
+      const otherPlayer = gameState.currentTurn === 1 ? gameState.p2 : gameState.p1;
+
+      // 視窗標題與第幾輪提示
+      document.getElementById("qModalHeader").textContent = `📘 ${q.unit}：${q.title} 翻書挑戰（隨機換題）`;
+      document.getElementById("qLapBadge").textContent = `${currentPlayer.name}・第 ${currentPlayer.laps} / 4 輪`;
+      document.getElementById("bookTargetDisplay").textContent = `📖 請翻開數學課本 第 ${q.page} 頁 ${q.section}`;
+      document.getElementById("roleAnswerer").textContent = `👤 作答者：${currentPlayer.name} — 請在「小白板」計算答案`;
+      document.getElementById("roleChecker").textContent = `🔍 裁判監督：${otherPlayer.name} — 翻到指定頁準備審查`;
+
+      document.getElementById("qProblemText").innerHTML = `
+        <div style="font-size: 16px; color: #64748b; margin-bottom: 6px;">課本原題（作答者請在實體小白板列式）：</div>
+        <div>${q.prompt}</div>
+      `;
+
+      // 渲染選項 (打亂順序，防止死記)
+      const optionsContainer = document.getElementById("optionsContainer");
+      optionsContainer.innerHTML = "";
+      const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+
+      shuffledOptions.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "opt-btn";
+        btn.innerHTML = `
+          <span class="opt-key">${["A", "B", "C", "D"][idx]}</span>
+          <span>${opt.text}</span>
+        `;
+        btn.addEventListener("click", () => handleAnswererSubmit(opt, btn, shuffledOptions));
+        optionsContainer.appendChild(btn);
+      });
+
+      // 重置各區塊狀態
+      document.getElementById("refereeBox").classList.add("hidden");
+      document.getElementById("feedbackBox").className = "feedback-box hidden";
+      document.getElementById("feedbackBox").innerHTML = "";
+      document.getElementById("penaltyCard").classList.add("hidden");
+      document.getElementById("landActionGroup").classList.add("hidden");
+      document.getElementById("nextTurnBtn").classList.add("hidden");
+
+      // 75秒作答計時器
+      startQuestionTimer();
+
+      document.getElementById("questionModal").classList.remove("hidden");
+    }
+
+    function startQuestionTimer() {
+      let timeLeft = 75;
+      const bar = document.getElementById("qTimerBar");
+      const textEl = document.getElementById("qTimerText");
+      bar.style.width = "100%";
+      textEl.textContent = `${timeLeft} 秒`;
+
+      if (gameState.qTimerInterval) clearInterval(gameState.qTimerInterval);
+
+      gameState.qTimerInterval = setInterval(() => {
+        timeLeft--;
+        textEl.textContent = `${timeLeft} 秒`;
+        bar.style.width = `${(timeLeft / 75) * 100}%`;
+
+        if (timeLeft <= 10) {
+          sound.countdown();
+        }
+
+        if (timeLeft <= 0) {
+          clearInterval(gameState.qTimerInterval);
+          handleQuestionTimeout();
+        }
+      }, 1000);
+    }
+
+    // 作答者超時未選
+    function handleQuestionTimeout() {
+      if (gameState.isAnswering) return;
+      gameState.isAnswering = true;
+      gameState.currentQuizAnsweredCorrectly = false;
+
+      document.querySelectorAll(".opt-btn").forEach(b => b.disabled = true);
+      sound.wrong();
+
+      const feedback = document.getElementById("feedbackBox");
+      feedback.className = "feedback-box feedback-error";
+      feedback.innerHTML = `
+        <div>⏰ 時間到！很可惜作答者未能於 75 秒內在小白板完成計算並送出答案。</div>
+        <div style="font-size: 17px; margin-top: 6px;">請裁判監督協助作答者翻閱課本訂正，共同釐清計算觀念！</div>
+      `;
+      feedback.classList.remove("hidden");
+
+      document.getElementById("nextTurnBtn").textContent = "➡️ 換下一位玩家擲骰";
+      document.getElementById("nextTurnBtn").classList.remove("hidden");
+    }
+
+    // 步驟 1：作答者在小白板算完並點選選項
+    function handleAnswererSubmit(selectedOpt, btnEl, allOptions) {
+      if (gameState.isAnswering) return;
+      gameState.isAnswering = true;
+      gameState.currentSelectedOpt = selectedOpt;
+
+      if (gameState.qTimerInterval) clearInterval(gameState.qTimerInterval);
+
+      // 鎖定全部選項，僅高亮選中項（暫不揭示對錯）
+      document.querySelectorAll(".opt-btn").forEach(b => {
+        b.disabled = true;
+        b.style.opacity = "0.7";
+      });
+      btnEl.style.opacity = "1";
+      btnEl.style.borderColor = "#f59e0b";
+      btnEl.style.background = "#fef3c7";
+
+      // 展開裁判審查區
+      const currentPlayer = gameState.currentTurn === 1 ? gameState.p1 : gameState.p2;
+      const otherPlayer = gameState.currentTurn === 1 ? gameState.p2 : gameState.p1;
+      const q = gameState.currentQuiz;
+
+      const refBox = document.getElementById("refereeBox");
+      document.getElementById("refereeTitle").textContent = `🔍 裁判監督【${otherPlayer.name}】審查時間`;
+      document.getElementById("refereeNotice").textContent = `請裁判監督翻閱課本 第 ${q.page} 頁 ${q.section}，嚴格核對答案！`;
+      document.getElementById("refereeChoiceDisplay").innerHTML = `
+        <span>👤 作答者【${currentPlayer.name}】的小白板答案為：</span>
+        <span style="color: #b45309; text-decoration: underline;">${selectedOpt.text}</span>
+      `;
+
+      refBox.classList.remove("hidden");
+      refBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    // 步驟 2：裁判監督進行審查判定（正確 vs 不正確）
+    function handleRefereeVerdict(refereeJudgeAgree) {
+      const selectedOpt = gameState.currentSelectedOpt;
+      const q = gameState.currentQuiz;
+      const tile = gameState.currentTile;
+      const currentPlayerNum = gameState.currentTurn;
+      const refereePlayerNum = currentPlayerNum === 1 ? 2 : 1;
+      const currentPlayer = currentPlayerNum === 1 ? gameState.p1 : gameState.p2;
+      const refereePlayer = refereePlayerNum === 1 ? gameState.p1 : gameState.p2;
+
+      document.getElementById("refereeBox").classList.add("hidden");
+
+      const correctOpt = q.options.find(o => o.isCorrect);
+      const isAnswererCorrect = selectedOpt && selectedOpt.isCorrect;
+      const feedback = document.getElementById("feedbackBox");
+
+      // 高亮標記選項對錯
+      document.querySelectorAll(".opt-btn").forEach(b => {
+        if (b.textContent.includes(correctOpt.text)) {
+          b.style.borderColor = "#22c55e";
+          b.style.background = "#dcfce7";
+          b.style.opacity = "1";
+        }
+      });
+
+      // 四大裁決情境判斷
+      if (isAnswererCorrect && refereeJudgeAgree) {
+        // ===== 情境一：作答者正確 且 裁判審查正確 =====
+        gameState.currentQuizAnsweredCorrectly = true;
+        gameState.pendingBuyer = currentPlayerNum; // 作答者享有佔地選擇權
+        sound.correct();
+
+        // 依比例賺取金額（作答者 $120 / 裁判監督 $60）
+        const rewardAns = 120;
+        const rewardRef = 60;
+        currentPlayer.gold += rewardAns;
+        refereePlayer.gold += rewardRef;
+        updatePlayerStatsUI();
+
+        feedback.className = "feedback-box feedback-success";
+        feedback.innerHTML = `
+          <div style="font-size: 28px; font-weight: 900;">🎉 雙方合作大成功！作答正確，審查精準！</div>
+          <div style="margin-top: 8px; font-size: 24px; line-height: 1.6;">
+            💰 <b>獎金分潤</b>：作答者【${currentPlayer.name}】小白板計算正確獲得 <b>+$${rewardAns}</b>！<br>
+            🔍 <b>審查獎金</b>：裁判監督【${refereePlayer.name}】翻書核對有功獲得 <b>+$${rewardRef}</b>！
+          </div>
+          <div style="font-size: 24px; color: #166534; margin-top: 8px;">📘 課本解題觀念：${correctOpt.reason}</div>
+        `;
+        feedback.classList.remove("hidden");
+
+        // 土地購買檢核（若土地未被佔領且作答者現金足夠）
+        showLandPurchaseOption(currentPlayer, "作答者");
+
+      } else if (!isAnswererCorrect && !refereeJudgeAgree) {
+        // ===== 情境二：作答者不正確 且 裁判審查出錯誤 =====
+        gameState.currentQuizAnsweredCorrectly = false;
+        gameState.pendingBuyer = refereePlayerNum; // 換裁判監督享有佔地選擇權！
+        sound.fanfare();
+
+        // 裁判抓錯立功獲得獎金 $150
+        const rewardRef = 150;
+        refereePlayer.gold += rewardRef;
+        updatePlayerStatsUI();
+
+        feedback.className = "feedback-box feedback-success";
+        feedback.style.borderColor = "#3b82f6";
+        feedback.style.background = "#eff6ff";
+        feedback.innerHTML = `
+          <div style="font-size: 28px; font-weight: 900; color: #1d4ed8;">🎯 裁判神抓錯！成功糾舉作答者計算盲點！</div>
+          <div style="margin-top: 8px; font-size: 24px; line-height: 1.6; color: #1e3a8a;">
+            🔍 <b>糾錯獎金</b>：裁判監督【${refereePlayer.name}】翻書審查抓出錯誤，獨得 <b>+$${rewardRef}</b>！<br>
+            👤 作答者【${currentPlayer.name}】答案有誤，本題無收益。
+          </div>
+          <div style="font-size: 24px; color: #b91c1c; margin-top: 6px;">❌ 作答者盲點：${selectedOpt.reason}</div>
+          <div style="font-size: 24px; color: #15803d; font-weight: 800;">💡 正確答案是：【${correctOpt.text}】（${correctOpt.reason}）</div>
+        `;
+        feedback.classList.remove("hidden");
+
+        // 換裁判監督享有插旗佔地優先權
+        showLandPurchaseOption(refereePlayer, "裁判監督");
+
+      } else if (!isAnswererCorrect && refereeJudgeAgree) {
+        // ===== 情境三：作答者不正確 且 裁判監督沒審查出錯誤（雙人連帶處罰） =====
+        gameState.currentQuizAnsweredCorrectly = false;
+        gameState.pendingBuyer = null;
+        sound.wrong();
+
+        // 依新規則：不在此處直接扣款或給答案，進入小白板互審訓練
+        feedback.className = "feedback-box feedback-error";
+        feedback.innerHTML = `
+          <div style="font-size: 28px; font-weight: 900;">🚨 雙人失誤連帶處罰！作答者答錯，裁判監督亦未能查出！</div>
+          <div style="margin-top: 8px; font-size: 24px; line-height: 1.6;">
+            ⚠️ 雙方均未落實翻閱課本驗算！系統已啟動<b>小白板互審訓練</b>。<br>
+            請兩位同學翻開課本指定頁數，在小白板上踏實計算，並<b>互相擔任裁判審查</b>！<br>
+            雙方互審皆通過才能解除處罰；若三輪未通過將依規則實施金額處罰！
+          </div>
+        `;
+        feedback.classList.remove("hidden");
+
+        // 初始化處罰狀態機
+        gameState.penaltyState = {
+          round: 1,
+          p1Fails: 0,
+          p2Fails: 0,
+          p1PassedThisRound: null,
+          p2PassedThisRound: null,
+          unitCategory: tile ? tile.unitCategory : "unit1",
+          excludeIds: [q.id],
+          isFinished: false
+        };
+
+        startPenaltyRound(1);
+
+      } else {
+        // ===== 情境四：作答者正確 但 裁判監督誤判不正確 =====
+        gameState.currentQuizAnsweredCorrectly = true;
+        gameState.pendingBuyer = currentPlayerNum;
+        sound.correct();
+
+        const rewardAns = 120;
+        currentPlayer.gold += rewardAns;
+        updatePlayerStatsUI();
+
+        feedback.className = "feedback-box feedback-success";
+        feedback.innerHTML = `
+          <div style="font-size: 28px; font-weight: 900;">⚖️ 裁判誤判！作答者小白板計算其實完全正確！</div>
+          <div style="margin-top: 8px; font-size: 24px; line-height: 1.6;">
+            💰 <b>作答者平反獎金</b>：作答者【${currentPlayer.name}】獲得 <b>+$${rewardAns}</b>！<br>
+            🔍 裁判監督【${refereePlayer.name}】因誤判冤枉對手，本題無審查獎金。
+          </div>
+          <div style="font-size: 24px; color: #166534; margin-top: 8px;">📘 課本解題觀念：${correctOpt.reason}</div>
+        `;
+        feedback.classList.remove("hidden");
+
+        showLandPurchaseOption(currentPlayer, "作答者");
+      }
+    }
+
+    // 顯示佔領或保留金幣選單
+    function showLandPurchaseOption(buyerPlayer, roleText) {
+      const tile = gameState.currentTile;
+      const landGroup = document.getElementById("landActionGroup");
+      const buyBtn = document.getElementById("buyLandBtn");
+      const nextBtn = document.getElementById("nextTurnBtn");
+
+      if (tile && tile.owner === null && tile.price > 0 && buyerPlayer.gold >= tile.price && !gameState.isSuddenDeath) {
+        buyBtn.innerHTML = `🚩 ${roleText}【${buyerPlayer.name}】花費 $${tile.price} 插旗佔領【${tile.name}】`;
+        buyBtn.disabled = false;
+        landGroup.classList.remove("hidden");
+        nextBtn.classList.add("hidden");
+      } else if (tile && tile.owner !== null) {
+        const ownerName = tile.owner === 1 ? gameState.p1.name : gameState.p2.name;
+        const feedback = document.getElementById("feedbackBox");
+        feedback.innerHTML += `<div style="margin-top: 8px; font-weight: 800; font-size: 18px; color: #475569;">📍 此格已經是【${ownerName}】的領地，不可再佔領！</div>`;
+        landGroup.classList.add("hidden");
+        nextBtn.textContent = "➡️ 換下一位玩家擲骰";
+        nextBtn.classList.remove("hidden");
+      } else {
+        landGroup.classList.add("hidden");
+        nextBtn.textContent = "➡️ 換下一位玩家擲骰";
+        nextBtn.classList.remove("hidden");
+      }
+    }
+
+    // 插旗佔地（支援作答者或裁判監督執行佔領）
+    function handleBuyLand() {
+      const buyerNum = gameState.pendingBuyer;
+      if (!buyerNum) return;
+      const buyer = buyerNum === 1 ? gameState.p1 : gameState.p2;
+      const tile = gameState.currentTile;
+      const buyBtn = document.getElementById("buyLandBtn");
+
+      // 嚴格多重防禦檢核
+      if (!tile || tile.owner !== null) {
+        alert("這塊土地已經被佔領過了，同一格不能重複或連續佔領！");
+        document.getElementById("landActionGroup").classList.add("hidden");
+        return;
+      }
+      if (buyer.gold < tile.price) {
+        alert("金幣不足，無法佔領此地產！");
+        return;
+      }
+
+      buyBtn.disabled = true;
+      document.getElementById("landActionGroup").classList.add("hidden");
+
+      buyer.gold -= tile.price;
+      tile.owner = buyerNum; // 設定唯一地主 1 或 2
+      buyer.lands.push(tile.id);
+      sound.buy();
+
+      const tileEl = document.getElementById(`tile-${tile.id}`);
+      if (tileEl) {
+        tileEl.classList.remove("owned-p1", "owned-p2");
+        tileEl.classList.add(buyerNum === 1 ? "owned-p1" : "owned-p2");
+
+        const oldFlag = tileEl.querySelector(".flag-pin");
+        if (oldFlag) oldFlag.remove();
+
+        const flag = document.createElement("div");
+        flag.className = "flag-pin";
+        flag.textContent = buyerNum === 1 ? "🚩" : "🏁";
+        tileEl.appendChild(flag);
+      }
+
+      updatePlayerStatsUI();
+      flashNotice(`🎊 ${buyer.name} 成功插旗佔領【${tile.name}】！`);
+
+      const nextBtn = document.getElementById("nextTurnBtn");
+      nextBtn.textContent = "➡️ 換下一位玩家擲骰";
+      nextBtn.classList.remove("hidden");
+    }
+
+    // 切換回合
+    function switchTurn() {
+      gameState.currentTurn = gameState.currentTurn === 1 ? 2 : 1;
+      updateTurnUI();
+    }
+
+    function updateTurnUI() {
+      const announcer = document.getElementById("turnAnnouncer");
+      const avatarImg = document.getElementById("turnAvatarImg");
+      const textSpan = document.getElementById("turnAnnouncerText");
+      const p1Panel = document.getElementById("p1Panel");
+      const p2Panel = document.getElementById("p2Panel");
+
+      if (gameState.currentTurn === 1) {
+        announcer.className = "turn-announcer turn-p1";
+        if (avatarImg) avatarImg.src = "assets/avatar_p1.jpg";
+        if (textSpan) textSpan.textContent = `輪到 ${gameState.p1.name} 擲骰子！`;
+        p1Panel.className = "player-panel active-p1";
+        p2Panel.className = "player-panel";
+      } else {
+        announcer.className = "turn-announcer turn-p2";
+        if (avatarImg) avatarImg.src = "assets/avatar_p2.jpg";
+        if (textSpan) textSpan.textContent = `輪到 ${gameState.p2.name} 擲骰子！`;
+        p1Panel.className = "player-panel";
+        p2Panel.className = "player-panel active-p2";
+      }
+
+      document.getElementById("actionHint").textContent = "請點擊骰子向前移動！";
+    }
+
+    function updatePlayerStatsUI() {
+      document.getElementById("p1Gold").textContent = gameState.p1.gold;
+      document.getElementById("p1Laps").textContent = `第 ${gameState.p1.laps} / 4 輪`;
+      document.getElementById("p2Gold").textContent = gameState.p2.gold;
+      document.getElementById("p2Laps").textContent = `第 ${gameState.p2.laps} / 4 輪`;
+
+      // 同步中央操作區對抗看板數據
+      const cP1Name = document.getElementById("centerP1Name");
+      const cP2Name = document.getElementById("centerP2Name");
+      const cP1Gold = document.getElementById("centerP1GoldVal");
+      const cP2Gold = document.getElementById("centerP2GoldVal");
+      const cP1Lands = document.getElementById("centerP1LandsVal");
+      const cP2Lands = document.getElementById("centerP2LandsVal");
+
+      if (cP1Name) cP1Name.textContent = gameState.p1.name;
+      if (cP2Name) cP2Name.textContent = gameState.p2.name;
+      if (cP1Gold) cP1Gold.textContent = `$${gameState.p1.gold}`;
+      if (cP2Gold) cP2Gold.textContent = `$${gameState.p2.gold}`;
+      if (cP1Lands) cP1Lands.textContent = `${gameState.p1.lands.length} 處`;
+      if (cP2Lands) cP2Lands.textContent = `${gameState.p2.lands.length} 處`;
+
+      // 同步中央 4 輪里程碑進度條
+      const maxLaps = Math.max(gameState.p1.laps, gameState.p2.laps);
+      for (let i = 1; i <= 4; i++) {
+        const stepEl = document.getElementById(`mStep${i}`);
+        if (stepEl) {
+          if (i <= maxLaps) {
+            stepEl.className = "milestone-step active-step";
+          } else {
+            stepEl.className = "milestone-step";
+          }
+        }
+      }
+
+      // 檢查五大單元被誰佔領並點亮徽章
+      const allP1Lands = gameState.p1.lands;
+      const allP2Lands = gameState.p2.lands;
+      const unitMap = {
+        badgeUnit1: "unit1",
+        badgeUnit2: "unit2",
+        badgeUnit3: "unit3",
+        badgeUnit4: "unit4",
+        badgeUnit5: "unit5"
+      };
+      for (const [badgeId, uCat] of Object.entries(unitMap)) {
+        const el = document.getElementById(badgeId);
+        if (el) {
+          const hasP1 = allP1Lands.some(id => TILES[id] && TILES[id].unitCategory === uCat);
+          const hasP2 = allP2Lands.some(id => TILES[id] && TILES[id].unitCategory === uCat);
+          if (hasP1 && !hasP2) {
+            el.className = "unit-badge-pill conquered-p1";
+          } else if (hasP2 && !hasP1) {
+            el.className = "unit-badge-pill conquered-p2";
+          } else if (hasP1 && hasP2) {
+            el.className = "unit-badge-pill";
+            el.style.background = "#fef3c7";
+            el.style.borderColor = "#f59e0b";
+          } else {
+            el.className = "unit-badge-pill";
+            el.style.background = "";
+            el.style.borderColor = "";
+          }
+        }
+      }
+
+      const p1LandsBox = document.getElementById("p1Lands");
+      p1LandsBox.innerHTML = "";
+      if (gameState.p1.lands.length === 0) {
+        p1LandsBox.innerHTML = '<span style="font-size: 20px; color: #94a3b8; font-weight: 800;">尚未佔領領地</span>';
+      } else {
+        gameState.p1.lands.forEach(id => {
+          const t = TILES.find(item => item.id === id);
+          if (t) {
+            const chip = document.createElement("span");
+            chip.className = "land-chip chip-p1";
+            chip.textContent = t.name;
+            p1LandsBox.appendChild(chip);
+          }
+        });
+      }
+
+      const p2LandsBox = document.getElementById("p2Lands");
+      p2LandsBox.innerHTML = "";
+      if (gameState.p2.lands.length === 0) {
+        p2LandsBox.innerHTML = '<span style="font-size: 20px; color: #94a3b8; font-weight: 800;">尚未佔領領地</span>';
+      } else {
+        gameState.p2.lands.forEach(id => {
+          const t = TILES.find(item => item.id === id);
+          if (t) {
+            const chip = document.createElement("span");
+            chip.className = "land-chip chip-p2";
+            chip.textContent = t.name;
+            p2LandsBox.appendChild(chip);
+          }
+        });
+      }
+    }
+
+        // 開啟補給小站任務彈窗（不洩漏答案，強制翻書核對）
+    function openGasStationModal(player) {
+      const task = GAS_STATION_TASKS[Math.floor(Math.random() * GAS_STATION_TASKS.length)];
+      setupEventTaskModal({
+        iconSrc: "assets/tile_gas.jpg",
+        title: `⛽ 加油補給小站・${task.title}`,
+        desc: "抵達加油小站！作答者需在小白板完成課本速查任務，經裁判審查合格後方可領取精力補給金！",
+        header: "⛽ 課本速查補給任務",
+        badge: `🎁 補給獎勵：${task.rewardText}`,
+        page: `📖 南一課本 第 ${task.page} 頁 ${task.section}`,
+        prompt: task.prompt,
+        hint: `🔍 裁判監督職責：請翻開實體課本第 ${task.page} 頁，核對作答者小白板書寫與計算是否完全正確！`,
+        task: task,
+        player: player
+      });
+    }
+
+    // 開啟機會事件任務彈窗（不洩漏答案，強制翻書核對）
+    function openChanceEventModal(player) {
+      const task = CHANCE_EVENTS_WITH_TASKS[Math.floor(Math.random() * CHANCE_EVENTS_WITH_TASKS.length)];
+      setupEventTaskModal({
+        iconSrc: "assets/tile_chance.jpg",
+        title: `🍀 機會命運・${task.title}`,
+        desc: task.desc,
+        header: "🍀 機會任務考驗",
+        badge: `🎁 事件獎勵：${task.rewardText}`,
+        page: `📖 南一課本 第 ${task.page} 頁 ${task.section}`,
+        prompt: task.prompt,
+        hint: `🔍 裁判監督職責：請翻開實體課本第 ${task.page} 頁，核對作答者小白板內容是否符合要求！`,
+        task: task,
+        player: player
+      });
+    }
+
+    // 開啟順風快進格任務彈窗（不洩漏答案，強制翻書核對）
+    function openBoostModal(player) {
+      const task = BOOST_TASKS[Math.floor(Math.random() * BOOST_TASKS.length)];
+      setupEventTaskModal({
+        iconSrc: "assets/tile_start.jpg",
+        title: `⚡ 順風快進・${task.title}`,
+        desc: task.desc,
+        header: "⚡ 極速快問快答任務",
+        badge: "🎁 快進獎勵：向前衝刺 2 步！",
+        page: `📖 南一課本 第 ${task.page} 頁 ${task.section}`,
+        prompt: task.prompt,
+        hint: `🔍 裁判監督職責：請翻開實體課本第 ${task.page} 頁，核對作答者小白板答案是否完全無誤！`,
+        task: task,
+        player: player
+      });
+    }
+
+    // 設定與呈現任務彈窗
+    function setupEventTaskModal(config) {
+      gameState.currentEventTask = config.task;
+      gameState.currentEventPlayer = config.player;
+      gameState.currentEventPassed = false;
+
+      document.getElementById("eventImg").src = config.iconSrc;
+      document.getElementById("eventTitle").textContent = config.title;
+      document.getElementById("eventDesc").textContent = config.desc;
+      document.getElementById("eventTaskHeader").textContent = config.header;
+      document.getElementById("eventRewardBadge").textContent = config.badge;
+      document.getElementById("eventTaskPage").textContent = config.page;
+      document.getElementById("eventTaskPrompt").textContent = config.prompt;
+      document.getElementById("eventTaskHint").textContent = config.hint;
+
+      // 重置回饋區與按鈕
+      document.getElementById("eventFeedbackBox").className = "feedback-box hidden";
+      document.getElementById("eventFeedbackBox").innerHTML = "";
+      document.getElementById("eventActionGroup").classList.remove("hidden");
+      document.getElementById("eventConfirmBtn").classList.add("hidden");
+
+      document.getElementById("eventModal").classList.remove("hidden");
+    }
+
+    // 裁判審查事件/補給任務判定
+    function handleEventTaskVerdict(passed) {
+      const task = gameState.currentEventTask;
+      const player = gameState.currentEventPlayer;
+      const feedback = document.getElementById("eventFeedbackBox");
+      const actionGroup = document.getElementById("eventActionGroup");
+      const confirmBtn = document.getElementById("eventConfirmBtn");
+
+      actionGroup.classList.add("hidden");
+      gameState.currentEventPassed = passed;
+
+      if (passed) {
+        sound.correct();
+        if (task.gold && task.gold > 0) {
+          player.gold += task.gold;
+          updatePlayerStatsUI();
+        }
+
+        feedback.className = "feedback-box feedback-success";
+        feedback.innerHTML = `
+          <div style="font-size: 22px; font-weight: 900;">🎉 任務順利完成！</div>
+          <div style="font-size: 18px; margin-top: 4px;">經裁判監督審查確認無誤，成功享有專屬獎勵：<b>${task.rewardText}</b>！</div>
+        `;
+      } else {
+        sound.wrong();
+        feedback.className = "feedback-box feedback-error";
+        feedback.innerHTML = `
+          <div style="font-size: 22px; font-weight: 900;">⚠️ 任務未完成或放棄</div>
+          <div style="font-size: 18px; margin-top: 4px;">本次無法領取補給或事件好運獎勵，再接再厲！</div>
+        `;
+      }
+
+      feedback.classList.remove("hidden");
+      confirmBtn.classList.remove("hidden");
+    }
+
+    function showEventModal(title, desc, iconSrc = "assets/tile_chance.jpg") {
+      document.getElementById("eventTitle").textContent = title;
+      document.getElementById("eventDesc").textContent = desc;
+      const img = document.getElementById("eventImg");
+      if (img) img.src = iconSrc;
+      document.getElementById("eventModal").classList.remove("hidden");
+    }
+
+    function flashNotice(msg) {
+      const hint = document.getElementById("actionHint");
+      hint.textContent = msg;
+      hint.style.color = "#d97706";
+      setTimeout(() => {
+        hint.style.color = "#64748b";
+      }, 3500);
+    }
+
+    /* ============================================================
+       10. 時間到總結算與排行榜保存 (LocalStorage)
+       ============================================================ */
+    function endGameAndSettle() {
+      gameState.isGameOver = true;
+      if (gameState.timerInterval) clearInterval(gameState.timerInterval);
+      if (gameState.qTimerInterval) clearInterval(gameState.qTimerInterval);
+
+      document.getElementById("questionModal").classList.add("hidden");
+      document.getElementById("eventModal").classList.add("hidden");
+
+      sound.fanfare();
+
+      const p1LandVal = gameState.p1.lands.reduce((sum, id) => {
+        const t = TILES.find(item => item.id === id);
+        return sum + (t ? t.price : 0);
+      }, 0);
+
+      const p2LandVal = gameState.p2.lands.reduce((sum, id) => {
+        const t = TILES.find(item => item.id === id);
+        return sum + (t ? t.price : 0);
+      }, 0);
+
+      const p1Total = gameState.p1.gold + p1LandVal;
+      const p2Total = gameState.p2.gold + p2LandVal;
+
+      document.getElementById("settleP1Name").textContent = gameState.p1.name;
+      document.getElementById("settleP1Laps").textContent = `完成圈數：${gameState.p1.laps} 輪`;
+      document.getElementById("settleP1Cash").textContent = `$${gameState.p1.gold}`;
+      document.getElementById("settleP1LandsVal").textContent = `$${p1LandVal}`;
+      document.getElementById("settleP1Total").textContent = `$${p1Total}`;
+
+      document.getElementById("settleP2Name").textContent = gameState.p2.name;
+      document.getElementById("settleP2Laps").textContent = `完成圈數：${gameState.p2.laps} 輪`;
+      document.getElementById("settleP2Cash").textContent = `$${gameState.p2.gold}`;
+      document.getElementById("settleP2LandsVal").textContent = `$${p2LandVal}`;
+      document.getElementById("settleP2Total").textContent = `$${p2Total}`;
+
+      const winBox = document.getElementById("settleWinnerAnnouncement");
+      const suddenDeathBtn = document.getElementById("suddenDeathBtn");
+
+      let winnerSeat = null;
+
+      if (p1Total > p2Total) {
+        winBox.textContent = `🏆 恭喜 ${gameState.p1.name} 榮登本次數學大富翁總冠軍！`;
+        suddenDeathBtn.classList.add("hidden");
+        winnerSeat = gameState.p1.seat;
+      } else if (p2Total > p1Total) {
+        winBox.textContent = `🏆 恭喜 ${gameState.p2.name} 榮登本次數學大富翁總冠軍！`;
+        suddenDeathBtn.classList.add("hidden");
+        winnerSeat = gameState.p2.seat;
+      } else {
+        winBox.textContent = `⚖️ 雙方總資產完全相同（$${p1Total}）！難分高下！`;
+        suddenDeathBtn.classList.remove("hidden");
+        suddenDeathBtn.onclick = startSuddenDeath;
+      }
+
+      saveMatchRecord({
+        date: new Date().toLocaleDateString("zh-TW"),
+        p1Seat: gameState.p1.seat,
+        p1Total: p1Total,
+        p2Seat: gameState.p2.seat,
+        p2Total: p2Total,
+        winner: winnerSeat
+      });
+
+      document.getElementById("settleModal").classList.remove("hidden");
+    }
+
+    // 黃金驟死賽
+    function startSuddenDeath() {
+      gameState.isSuddenDeath = true;
+      document.getElementById("settleModal").classList.add("hidden");
+      openQuestionModal({ unitCategory: "review", name: "黃金搶答驟死賽", rent: 0, price: 0 });
+    }
+
+    // 重置並返回開局選號
+    function resetToSetup() {
+      document.getElementById("settleModal").classList.add("hidden");
+      document.getElementById("urgentBanner").style.display = "none";
+      document.getElementById("gameTimerDisplay").classList.remove("urgent");
+
+      TILES.forEach(t => {
+        t.owner = null;
+        const el = document.getElementById(`tile-${t.id}`);
+        if (el) {
+          el.classList.remove("owned-p1", "owned-p2");
+          const flag = el.querySelector(".flag-pin");
+          if (flag) flag.remove();
+        }
+      });
+
+      gameState.p1 = { seat: null, name: "紅隊探險家", gold: 1000, pos: 0, laps: 1, lands: [] };
+      gameState.p2 = { seat: null, name: "藍隊大富翁", gold: 1000, pos: 0, laps: 1, lands: [] };
+      gameState.currentTurn = 1;
+      gameState.isUrgent = false;
+      gameState.isGameOver = false;
+      gameState.isSuddenDeath = false;
+      gameState.isAnswering = false;
+      gameState.currentQuizAnsweredCorrectly = false;
+
+      questionDrawManager.init(); // 重新洗牌題目隊列
+
+      updatePlayerStatsUI();
+      updatePiecesDisplay();
+
+      document.getElementById("setupModal").classList.remove("hidden");
+    }
+
+    /* ============================================================
+       11. 全班歷史戰績榜管理 (LocalStorage)
+       ============================================================ */
+    const STORAGE_KEY = "g4_math_monopoly_records";
+
+    function getMatchRecords() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch(e) {
+        return [];
+      }
+    }
+
+    function saveMatchRecord(record) {
+      try {
+        const list = getMatchRecords();
+        list.push(record);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+      } catch(e) {}
+    }
+
+    function openLeaderboard() {
+      const records = getMatchRecords();
+      const stats = {};
+
+      for (let i = 1; i <= 28; i++) {
+        stats[i] = { matches: 0, wins: 0, maxAsset: 0 };
+      }
+
+      records.forEach(r => {
+        if (stats[r.p1Seat]) {
+          stats[r.p1Seat].matches++;
+          if (r.p1Total > stats[r.p1Seat].maxAsset) stats[r.p1Seat].maxAsset = r.p1Total;
+          if (r.winner == r.p1Seat) stats[r.p1Seat].wins++;
+        }
+        if (stats[r.p2Seat]) {
+          stats[r.p2Seat].matches++;
+          if (r.p2Total > stats[r.p2Seat].maxAsset) stats[r.p2Seat].maxAsset = r.p2Total;
+          if (r.winner == r.p2Seat) stats[r.p2Seat].wins++;
+        }
+      });
+
+      const tbody = document.getElementById("leaderboardBody");
+      tbody.innerHTML = "";
+
+      let hasRecord = false;
+      for (let i = 1; i <= 28; i++) {
+        const s = stats[i];
+        if (s.matches > 0) {
+          hasRecord = true;
+          const tr = document.createElement("tr");
+          const winRate = ((s.wins / s.matches) * 100).toFixed(0);
+          tr.innerHTML = `
+            <td><b>${i} 號</b></td>
+            <td>${s.matches} 場</td>
+            <td style="color: #15803d; font-weight: 800;">${s.wins} 次</td>
+            <td style="color: #d97706; font-weight: 800;">$${s.maxAsset}</td>
+            <td><span class="badge">${winRate}%</span></td>
+          `;
+          tbody.appendChild(tr);
+        }
+      }
+
+      if (!hasRecord) {
+        tbody.innerHTML = `<tr><td colspan="5" style="color: #94a3b8; padding: 20px;">尚無對戰記錄，請先完成一局遊戲！</td></tr>`;
+      }
+
+      document.getElementById("leaderboardModal").classList.remove("hidden");
+    }
+
+    function closeLeaderboard() {
+      document.getElementById("leaderboardModal").classList.add("hidden");
+    }
+
+    function clearLeaderboard() {
+      if (confirm("確定要清空全班的所有歷史戰績嗎？此動作無法復原！")) {
+        localStorage.removeItem(STORAGE_KEY);
+        openLeaderboard();
+      }
+    }
+
+    function toggleSound() {
+      sound.enabled = !sound.enabled;
+      document.getElementById("soundToggleBtn").textContent = sound.enabled ? "🔊 音效開" : "🔇 靜音中";
+    }
+  </script>
+</body>
+</html>

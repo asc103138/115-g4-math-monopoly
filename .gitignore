@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# Temporary & Scratch Files
+*.tmp
+*.bak
+_tmp_*
+_*.py
+
+# Node & dependencies
+node_modules/
+npm-debug.log*
+
+# Environment & Secrets
+.env
+.env.local
+*.pem
+*.key
