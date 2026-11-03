@@ -762,6 +762,146 @@
       white-space: nowrap;
     }
 
+    
+    /* ============================================================
+       平板直向 (Portrait) 與窄螢幕佈局：徹底解決棋盤被兩側擠壓成窄條問題
+       ============================================================ */
+    @media (max-width: 960px), (orientation: portrait) and (max-width: 1100px) {
+      body {
+        height: 100vh;
+        max-height: 100vh;
+        overflow: hidden;
+        padding: 4px 8px;
+      }
+
+      header {
+        padding: 6px 14px;
+        margin-bottom: 4px;
+      }
+
+      .header-title h1 {
+        font-size: 19px;
+      }
+
+      .timer-container {
+        font-size: 20px;
+        padding: 4px 12px;
+      }
+
+      .icon-btn {
+        padding: 4px 10px;
+        font-size: 14px;
+      }
+
+      /* 直向時：兩隊面板移到上方並排，中央棋盤在下方享有 100% 全寬度 */
+      main {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto 1fr;
+        grid-template-areas:
+          "p1 p2"
+          "board board";
+        gap: 6px;
+        height: calc(100vh - 66px);
+      }
+
+      #p1Panel {
+        grid-area: p1;
+        padding: 5px 8px;
+        height: auto;
+        gap: 3px;
+        border-radius: 12px;
+      }
+
+      #p2Panel {
+        grid-area: p2;
+        padding: 5px 8px;
+        height: auto;
+        gap: 3px;
+        border-radius: 12px;
+      }
+
+      .board-container {
+        grid-area: board;
+        width: 100%;
+        height: 100%;
+        padding: 4px;
+      }
+
+      .board-grid {
+        aspect-ratio: 16 / 9;
+        width: 100%;
+        max-height: 100%;
+        height: auto;
+        margin: auto;
+      }
+
+      /* 精簡直向頂部面板尺寸 */
+      .player-panel .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        font-size: 18px;
+      }
+
+      .player-panel .player-title {
+        font-size: 15px;
+      }
+
+      .player-panel .player-seat {
+        font-size: 12px;
+      }
+
+      .player-panel .stat-row {
+        padding: 2px 6px;
+        font-size: 13px;
+      }
+
+      .player-panel .stat-val {
+        font-size: 14px;
+      }
+
+      .player-panel .gold-val {
+        font-size: 16px;
+      }
+
+      .player-panel .lands-title {
+        font-size: 12px !important;
+        margin-bottom: 1px !important;
+      }
+
+      .player-panel .lands-grid {
+        min-height: 22px;
+        padding: 2px 4px;
+        gap: 3px;
+      }
+
+      .player-panel .land-chip {
+        font-size: 11px;
+        padding: 1px 5px;
+      }
+
+      /* 棋盤格子字體於直向自適應 */
+      .tile {
+        padding: 2px 3px;
+        font-size: 13px;
+      }
+      .tile-name {
+        font-size: clamp(11px, 1.3vw, 15px);
+      }
+      .tile-tag {
+        font-size: clamp(9.5px, 0.9vw, 11.5px);
+        padding: 1px 3px;
+      }
+      .tile-thumb {
+        width: clamp(18px, 2.5vw, 28px);
+        height: clamp(18px, 2.5vw, 28px);
+      }
+      .tile-price {
+        font-size: clamp(10px, 1.0vw, 12px);
+      }
+    }
+
     /* 換隊提醒浮動橫幅 (紅隊/藍隊清晰分明) */
     .turn-switch-toast {
       position: fixed;
@@ -1409,7 +1549,7 @@
       </div>
 
       <div>
-        <div style="font-size: 24px; font-weight: 900; color: #475569; margin-bottom: 6px;">🚩 佔領領地 (過路費收益)</div>
+        <div class="lands-title" style="font-size: 24px; font-weight: 900; color: #475569; margin-bottom: 6px;">🚩 佔領領地 (過路費收益)</div>
         <div class="lands-grid" id="p1Lands">
           <span style="font-size: 20px; color: #94a3b8; font-weight: 800;">尚未佔領領地</span>
         </div>
@@ -1581,7 +1721,7 @@
       </div>
 
       <div>
-        <div style="font-size: 24px; font-weight: 900; color: #475569; margin-bottom: 6px;">🚩 佔領領地 (過路費收益)</div>
+        <div class="lands-title" style="font-size: 24px; font-weight: 900; color: #475569; margin-bottom: 6px;">🚩 佔領領地 (過路費收益)</div>
         <div class="lands-grid" id="p2Lands">
           <span style="font-size: 20px; color: #94a3b8; font-weight: 800;">尚未佔領領地</span>
         </div>
@@ -3867,8 +4007,8 @@
 
     function updateTurnUI() {
       const announcer = document.getElementById("turnAnnouncer");
-      const avatarImg = document.getElementById("turnAvatarBadge");
-      const textSpan = document.getElementById("turnText");
+      const avatarImg = document.getElementById("turnAvatarBadge") || document.getElementById("turnAvatarImg");
+      const textSpan = document.getElementById("turnText") || document.getElementById("turnAnnouncerText");
       const p1Panel = document.getElementById("p1Panel");
       const p2Panel = document.getElementById("p2Panel");
       const actionHint = document.getElementById("actionHint");
@@ -3876,21 +4016,29 @@
       const isP1 = (gameState.currentTurn === 1);
 
       if (isP1) {
-        announcer.className = "turn-announcer turn-p1";
-        if (avatarImg) avatarImg.src = "assets/avatar_p1.jpg";
-        if (textSpan) textSpan.textContent = `輪到 ${gameState.p1.name} 擲骰！`;
-        p1Panel.className = "player-panel active-p1";
-        p2Panel.className = "player-panel";
+        if (announcer) announcer.className = "turn-announcer turn-p1";
+        if (avatarImg) {
+          avatarImg.src = "assets/avatar_p1.jpg";
+          avatarImg.alt = "紅隊頭像";
+        }
+        const p1Label = gameState.p1.seat ? `紅隊 (${gameState.p1.seat}號)` : (gameState.p1.name || "紅隊探險家");
+        if (textSpan) textSpan.textContent = `輪到 ${p1Label} 擲骰！`;
+        if (p1Panel) p1Panel.className = "player-panel active-p1";
+        if (p2Panel) p2Panel.className = "player-panel";
         if (actionHint) {
           actionHint.innerHTML = `<span style="color: #b91c1c; font-weight: 900;">🔴 輪到【紅隊】！請點擊 3D 骰子向前衝刺！</span>`;
         }
         showTurnSwitchToast(gameState.p1, true);
       } else {
-        announcer.className = "turn-announcer turn-p2";
-        if (avatarImg) avatarImg.src = "assets/avatar_p2.jpg";
-        if (textSpan) textSpan.textContent = `輪到 ${gameState.p2.name} 擲骰！`;
-        p1Panel.className = "player-panel";
-        p2Panel.className = "player-panel active-p2";
+        if (announcer) announcer.className = "turn-announcer turn-p2";
+        if (avatarImg) {
+          avatarImg.src = "assets/avatar_p2.jpg";
+          avatarImg.alt = "藍隊頭像";
+        }
+        const p2Label = gameState.p2.seat ? `藍隊 (${gameState.p2.seat}號)` : (gameState.p2.name || "藍隊大富翁");
+        if (textSpan) textSpan.textContent = `輪到 ${p2Label} 擲骰！`;
+        if (p1Panel) p1Panel.className = "player-panel";
+        if (p2Panel) p2Panel.className = "player-panel active-p2";
         if (actionHint) {
           actionHint.innerHTML = `<span style="color: #1d4ed8; font-weight: 900;">🔵 輪到【藍隊】！請點擊 3D 骰子向前衝刺！</span>`;
         }
