@@ -156,17 +156,10 @@
       box-sizing: border-box;
     }
 
-    @media (max-width: 1280px) {
+    @media (max-width: 1400px) and (min-width: 1181px) {
       main {
         grid-template-columns: minmax(180px, 215px) 1fr minmax(180px, 215px);
         gap: 8px;
-      }
-    }
-
-    @media (max-width: 950px) {
-      main {
-        grid-template-columns: 160px 1fr 160px;
-        gap: 6px;
       }
     }
 
@@ -764,9 +757,10 @@
 
     
     /* ============================================================
-       平板直向 (Portrait) 與窄螢幕佈局：徹底解決棋盤被兩側擠壓成窄條問題
+       平板 (Tablets / iPads / 全螢幕比例失衡防護)：徹底解決棋盤被兩側擠壓成窄條問題
+       涵蓋所有 iPad (1024x768, 1112x834, 1180x820)、直向螢幕與長寬比 < 1.48 之螢幕
        ============================================================ */
-    @media (max-width: 960px), (orientation: portrait) and (max-width: 1100px) {
+    @media (max-width: 1180px), (max-aspect-ratio: 1.48/1), (orientation: portrait) {
       body {
         height: 100vh;
         max-height: 100vh;
@@ -807,54 +801,69 @@
 
       #p1Panel {
         grid-area: p1;
-        padding: 5px 8px;
-        height: auto;
-        gap: 3px;
-        border-radius: 12px;
       }
-
       #p2Panel {
         grid-area: p2;
-        padding: 5px 8px;
+      }
+
+      #p1Panel, #p2Panel {
+        padding: 4px 10px;
         height: auto;
-        gap: 3px;
+        min-height: 44px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
         border-radius: 12px;
+        overflow: hidden;
       }
 
-      .board-container {
-        grid-area: board;
-        width: 100%;
-        height: 100%;
-        padding: 4px;
+      .player-panel .player-header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
       }
 
-      .board-grid {
-        aspect-ratio: 16 / 9;
-        width: 100%;
-        max-height: 100%;
-        height: auto;
-        margin: auto;
-      }
-
-      /* 精簡直向頂部面板尺寸 */
       .player-panel .avatar {
         width: 36px;
         height: 36px;
-        border-radius: 8px;
+        border-radius: 50%;
         font-size: 18px;
+        flex-shrink: 0;
+      }
+
+      .player-panel .avatar-img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
       }
 
       .player-panel .player-title {
         font-size: 15px;
+        font-weight: 900;
+        line-height: 1.15;
       }
 
       .player-panel .player-seat {
         font-size: 12px;
+        font-weight: 800;
       }
 
       .player-panel .stat-row {
-        padding: 2px 6px;
+        padding: 2px 8px;
         font-size: 13px;
+        font-weight: 800;
+        background: #f8fafc;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        white-space: nowrap;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 4px;
       }
 
       .player-panel .stat-val {
@@ -865,20 +874,72 @@
         font-size: 16px;
       }
 
+      .player-panel .lands-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        flex-shrink: 1;
+        min-width: 0;
+      }
+
       .player-panel .lands-title {
         font-size: 12px !important;
-        margin-bottom: 1px !important;
+        font-weight: 800;
+        margin-bottom: 0 !important;
+        white-space: nowrap;
       }
 
       .player-panel .lands-grid {
-        min-height: 22px;
+        min-height: auto;
         padding: 2px 4px;
         gap: 3px;
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        overflow-x: auto;
       }
 
       .player-panel .land-chip {
         font-size: 11px;
         padding: 1px 5px;
+        white-space: nowrap;
+      }
+
+      .board-container {
+        grid-area: board;
+        width: 100%;
+        height: 100%;
+        padding: 4px;
+        min-height: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .board-grid {
+        aspect-ratio: 16 / 9;
+        width: 100%;
+        max-height: 100%;
+        height: auto;
+        margin: auto;
+      }
+
+      .board-hero-img {
+        width: clamp(45px, 5vw, 75px) !important;
+        height: clamp(45px, 5vw, 75px) !important;
+      }
+      .unit-badge-pill {
+        font-size: clamp(10.5px, 1.1vw, 13.5px);
+        padding: 1px 4px;
+      }
+      .radar-item {
+        font-size: clamp(11.5px, 1.1vw, 13.5px);
+        gap: 4px;
+      }
+      .dice-btn {
+        width: clamp(66px, 6vw, 84px);
+        height: clamp(66px, 6vw, 84px);
+        font-size: clamp(40px, 4vw, 54px);
       }
 
       /* 棋盤格子字體於直向自適應 */
@@ -900,6 +961,44 @@
       .tile-price {
         font-size: clamp(10px, 1.0vw, 12px);
       }
+    }
+
+    
+    /* 課本圖形題專屬卡片與標籤 */
+    .question-diagram-card {
+      margin: 8px 0;
+      background: white;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 6px 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .diagram-tag {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 2px 10px;
+      border-radius: 999px;
+      margin-bottom: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .diagram-pill-badge {
+      font-size: 12.5px;
+      font-weight: 900;
+      color: #92400e;
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      padding: 2px 8px;
+      border-radius: 6px;
     }
 
     /* 換隊提醒浮動橫幅 (紅隊/藍隊清晰分明) */
@@ -1548,7 +1647,7 @@
         <span class="stat-val lap-val" id="p1Laps">第 1 / 4 輪</span>
       </div>
 
-      <div>
+      <div class="lands-wrapper">
         <div class="lands-title" style="font-size: 24px; font-weight: 900; color: #475569; margin-bottom: 6px;">🚩 佔領領地 (過路費收益)</div>
         <div class="lands-grid" id="p1Lands">
           <span style="font-size: 20px; color: #94a3b8; font-weight: 800;">尚未佔領領地</span>
@@ -1720,7 +1819,7 @@
         <span class="stat-val lap-val" id="p2Laps">第 1 / 4 輪</span>
       </div>
 
-      <div>
+      <div class="lands-wrapper">
         <div class="lands-title" style="font-size: 24px; font-weight: 900; color: #475569; margin-bottom: 6px;">🚩 佔領領地 (過路費收益)</div>
         <div class="lands-grid" id="p2Lands">
           <span style="font-size: 20px; color: #94a3b8; font-weight: 800;">尚未佔領領地</span>
@@ -2454,7 +2553,18 @@
           title: "量角器讀刻度",
           page: 48,
           section: "第 1 大題第 (1) 小題",
-          prompt: "看圖填填看：量角器中心對齊頂點，0度基準線在內圈，另一邊指向刻度，該角是（　　）度？",
+          prompt: "【📖 課本第 48 頁第 1-(1) 題圖形】請看課本或下方量角器圖形：中心對齊頂點，0度基準線在內圈，另一邊指向刻度，該角是幾度？",
+          diagramSvg: `<svg width="280" height="150" viewBox="0 0 280 150" style="max-width: 100%; height: auto;">
+  <path d="M 30,130 A 110,110 0 0,1 250,130 Z" fill="#f0f9ff" stroke="#0284c7" stroke-width="2.5" />
+  <line x1="140" y1="130" x2="250" y2="130" stroke="#0284c7" stroke-width="3" />
+  <text x="235" y="125" font-size="12" font-weight="900" fill="#0369a1">0°</text>
+  <!-- 40 degree line: dx = 100 * cos(40) = 76.6, dy = -100 * sin(40) = -64.3 -->
+  <line x1="140" y1="130" x2="216.6" y2="65.7" stroke="#dc2626" stroke-width="3.5" marker-end="url(#arrow)" />
+  <path d="M 175,130 A 35,35 0 0,0 166.8,107.5" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="2,2" />
+  <circle cx="140" cy="130" r="4" fill="#0f172a" />
+  <text x="140" y="145" font-size="12" font-weight="800" text-anchor="middle" fill="#475569">頂點中心</text>
+  <text x="185" y="112" font-size="16" font-weight="900" fill="#dc2626">40°</text>
+</svg>`,
           options: [
             { text: "40 度", isCorrect: true, reason: "正解！以內圈 0 度出發，指向 40 度，為銳角。" },
             { text: "140 度", isCorrect: false, reason: "迷思：看錯外圈刻度了！這是一個比直角小的銳角，不可讀成 140 度。" },
@@ -2468,7 +2578,24 @@
           title: "鐘面旋轉角",
           page: 49,
           section: "第 3 大題第 (1) 小題",
-          prompt: "下圖鐘面上的指針由 12 走到 4：指針往（　）時針方向旋轉（　）度？",
+          prompt: "【📖 課本第 49 頁第 3-(1) 題鐘面】請看課本或下方鐘面：指針由 12 走到 4，指針往哪一個方向旋轉了幾度？",
+          diagramSvg: `<svg width="180" height="180" viewBox="0 0 180 180" style="max-width: 100%; height: auto;">
+  <circle cx="90" cy="90" r="75" fill="#f8fafc" stroke="#334155" stroke-width="3" />
+  <!-- Clock numbers -->
+  <text x="90" y="32" font-size="14" font-weight="900" text-anchor="middle" fill="#0f172a">12</text>
+  <text x="148" y="95" font-size="14" font-weight="900" text-anchor="middle" fill="#0f172a">3</text>
+  <text x="90" y="158" font-size="14" font-weight="900" text-anchor="middle" fill="#0f172a">6</text>
+  <text x="32" y="95" font-size="14" font-weight="900" text-anchor="middle" fill="#0f172a">9</text>
+  <text x="135" y="125" font-size="15" font-weight="900" text-anchor="middle" fill="#dc2626">4</text>
+  <!-- Hand at 12 (start) -->
+  <line x1="90" y1="90" x2="90" y2="40" stroke="#94a3b8" stroke-width="3" stroke-dasharray="3,3" />
+  <!-- Hand at 4 (end) - 120 deg: dx = 55*sin(120)=47.6, dy = 55*-cos(120)=27.5 -->
+  <line x1="90" y1="90" x2="137.6" y2="117.5" stroke="#2563eb" stroke-width="4" />
+  <!-- Rotation arc -->
+  <path d="M 90,65 A 25,25 0 0,1 111.6,102.5" fill="none" stroke="#f59e0b" stroke-width="3" />
+  <circle cx="90" cy="90" r="4.5" fill="#0f172a" />
+  <text x="116" y="75" font-size="14" font-weight="900" fill="#d97706">120°</text>
+</svg>`,
           options: [
             { text: "順時針，120 度", isCorrect: true, reason: "正解！順時針方向走 4 大格，一大格 30 度，30° × 4 ＝ 120°。" },
             { text: "逆時針，120 度", isCorrect: false, reason: "方向判斷錯誤：鐘面上指針由 12 走到 4 是順時針。" },
@@ -2482,7 +2609,21 @@
           title: "平角角度計算",
           page: 49,
           section: "第 4 大題第 (1) 小題",
-          prompt: "平角直線上有相鄰三角，已知其中兩角分別為 50° 和 40°，求未知角 ∠ㄅ 是幾度？",
+          prompt: "【📖 課本第 49 頁第 4-(1) 題平角】一條直線上形成 180° 平角，已知相鄰兩角為 50° 與 40°，求未知角 ∠ㄅ 是幾度？",
+          diagramSvg: `<svg width="260" height="120" viewBox="0 0 260 120" style="max-width: 100%; height: auto;">
+  <line x1="20" y1="95" x2="240" y2="95" stroke="#334155" stroke-width="3" />
+  <!-- Vertex O at 130, 95 -->
+  <!-- Left ray 50 deg from flat line: 180 - 50 = 130 deg polar -> dx = -60*cos(50)=-38.5, dy = -60*sin(50)=-46 -->
+  <line x1="130" y1="95" x2="75" y2="45" stroke="#2563eb" stroke-width="2.5" />
+  <!-- Right ray 40 deg from flat line -> dx = 60*cos(40)=46, dy = -60*sin(40)=-38.5 -->
+  <line x1="130" y1="95" x2="185" y2="52" stroke="#2563eb" stroke-width="2.5" />
+  <circle cx="130" cy="95" r="4" fill="#0f172a" />
+  <text x="60" y="85" font-size="14" font-weight="900" fill="#2563eb">50°</text>
+  <text x="130" y="60" font-size="16" font-weight="900" text-anchor="middle" fill="#dc2626">∠ㄅ (？°)</text>
+  <text x="190" y="85" font-size="14" font-weight="900" fill="#2563eb">40°</text>
+  <!-- Full straight angle arc indicator -->
+  <text x="130" y="112" font-size="13" font-weight="800" text-anchor="middle" fill="#64748b">平角直線總共 180°</text>
+</svg>`,
           options: [
             { text: "90 度", isCorrect: true, reason: "正解！平角是 180 度，180° － 50° － 40° ＝ 90°。" },
             { text: "80 度", isCorrect: false, reason: "減法計算錯誤。" },
@@ -2496,7 +2637,21 @@
           title: "角與直角比較",
           page: 49,
           section: "第 5 大題第 (2) 小題",
-          prompt: "課本第 49 頁第 5 大題：∠B 比直角（大，小），所以 ∠B 是（鈍角，銳角）？",
+          prompt: "【📖 課本第 49 頁第 5-(2) 題圖形】請看課本或下方角 ∠B：∠B 比 90° 直角（大，小），所以 ∠B 是什麼角？",
+          diagramSvg: `<svg width="220" height="130" viewBox="0 0 220 130" style="max-width: 100%; height: auto;">
+  <!-- Base ray -->
+  <line x1="60" y1="100" x2="190" y2="100" stroke="#334155" stroke-width="3" />
+  <!-- 90 deg dashed right-angle reference -->
+  <line x1="60" y1="100" x2="60" y2="25" stroke="#94a3b8" stroke-width="2" stroke-dasharray="3,3" />
+  <path d="M 60,88 L 72,88 L 72,100" fill="none" stroke="#94a3b8" stroke-width="1.5" />
+  <text x="66" y="82" font-size="11" font-weight="800" fill="#64748b">90°直角</text>
+  <!-- Angle B ray (obtuse, ~130 deg open to left) -->
+  <line x1="60" y1="100" x2="15" y2="40" stroke="#dc2626" stroke-width="3.5" />
+  <circle cx="60" cy="100" r="4" fill="#0f172a" />
+  <text x="50" y="118" font-size="14" font-weight="900" fill="#0f172a">頂點 B</text>
+  <path d="M 85,100 A 25,25 0 0,0 43,82" fill="none" stroke="#dc2626" stroke-width="2.5" />
+  <text x="95" y="65" font-size="16" font-weight="900" fill="#dc2626">∠B (大於90°鈍角)</text>
+</svg>`,
           options: [
             { text: "比直角大，是鈍角", isCorrect: true, reason: "正解！大於 90 度且小於 180 度的角叫作鈍角。" },
             { text: "比直角小，是銳角", isCorrect: false, reason: "迷思：圖形張開幅度大於 90 度直角。" },
@@ -2510,7 +2665,19 @@
           title: "鈍角量角器報讀",
           page: 48,
           section: "第 1 大題第 (2) 小題",
-          prompt: "看圖填填看：量角器由 0 度基準線向左開口指向刻度 130，該角是（　　）度？",
+          prompt: "【📖 課本第 48 頁第 1-(2) 題圖形】請看課本或下方量角器：0度基準線向左，另一邊指向刻度 130，該角是幾度？",
+          diagramSvg: `<svg width="280" height="150" viewBox="0 0 280 150" style="max-width: 100%; height: auto;">
+  <path d="M 30,130 A 110,110 0 0,1 250,130 Z" fill="#fefce8" stroke="#ca8a04" stroke-width="2.5" />
+  <!-- Left baseline 0° -->
+  <line x1="30" y1="130" x2="140" y2="130" stroke="#ca8a04" stroke-width="3" />
+  <text x="35" y="125" font-size="12" font-weight="900" fill="#854d0e">0° (左基準線)</text>
+  <!-- 130 degree ray pointing towards right (180-130 = 50 deg from left) -> dx = 100*cos(50) = 64.3, dy = -100*sin(50) = -76.6 -->
+  <line x1="140" y1="130" x2="204.3" y2="53.4" stroke="#dc2626" stroke-width="3.5" />
+  <circle cx="140" cy="130" r="4" fill="#0f172a" />
+  <text x="140" y="145" font-size="12" font-weight="800" text-anchor="middle" fill="#475569">中心點</text>
+  <path d="M 105,130 A 35,35 0 0,1 162.5,96.6" fill="none" stroke="#dc2626" stroke-width="2.5" />
+  <text x="125" y="95" font-size="16" font-weight="900" fill="#dc2626">130°</text>
+</svg>`,
           options: [
             { text: "130 度", isCorrect: true, reason: "正解！開口大於 90 度直角，讀取 130 度刻度。" },
             { text: "50 度", isCorrect: false, reason: "迷思：看錯內圈小刻度了，這是一個鈍角不是銳角！" },
@@ -2524,7 +2691,22 @@
           title: "鐘面平角旋轉",
           page: 49,
           section: "第 3 大題第 (2) 小題",
-          prompt: "下圖鐘面上的指針由 12 走到 6：指針往順時針方向旋轉了幾度？",
+          prompt: "【📖 課本第 49 頁第 3-(2) 題鐘面】請看課本或下方鐘面：指針由 12 走到 6，指針往順時針方向旋轉了幾度？",
+          diagramSvg: `<svg width="180" height="180" viewBox="0 0 180 180" style="max-width: 100%; height: auto;">
+  <circle cx="90" cy="90" r="75" fill="#f8fafc" stroke="#334155" stroke-width="3" />
+  <text x="90" y="32" font-size="14" font-weight="900" text-anchor="middle" fill="#0f172a">12</text>
+  <text x="148" y="95" font-size="14" font-weight="900" text-anchor="middle" fill="#0f172a">3</text>
+  <text x="90" y="158" font-size="15" font-weight="900" text-anchor="middle" fill="#dc2626">6</text>
+  <text x="32" y="95" font-size="14" font-weight="900" text-anchor="middle" fill="#0f172a">9</text>
+  <!-- Hand at 12 -->
+  <line x1="90" y1="90" x2="90" y2="40" stroke="#94a3b8" stroke-width="3" stroke-dasharray="3,3" />
+  <!-- Hand at 6 -->
+  <line x1="90" y1="90" x2="90" y2="145" stroke="#2563eb" stroke-width="4" />
+  <!-- Semi-circle clockwise arc -->
+  <path d="M 90,65 A 25,25 0 0,1 90,115" fill="none" stroke="#f59e0b" stroke-width="3" />
+  <circle cx="90" cy="90" r="4.5" fill="#0f172a" />
+  <text x="120" y="95" font-size="15" font-weight="900" fill="#d97706">180°</text>
+</svg>`,
           options: [
             { text: "180 度", isCorrect: true, reason: "正解！由 12 走到 6 剛好轉了半圈（平角），30° × 6 ＝ 180°。" },
             { text: "90 度", isCorrect: false, reason: "由 12 走到 3 才是 90 度。" },
@@ -2631,6 +2813,13 @@
           page: 76,
           section: "第 1 大題第 (1) 小題",
           prompt: "在（　）裡填入銳角、鈍角或直角三角形：一個圖形的三個角都小於 90 度，是什麼三角形？",
+          diagramSvg: `<svg width="220" height="130" viewBox="0 0 220 130" style="max-width: 100%; height: auto;">
+  <polygon points="110,20 30,110 190,110" fill="#f0fdf4" stroke="#16a34a" stroke-width="3" />
+  <text x="110" y="45" font-size="12" font-weight="800" text-anchor="middle" fill="#15803d">&lt; 90°</text>
+  <text x="55" y="105" font-size="12" font-weight="800" fill="#15803d">&lt; 90°</text>
+  <text x="135" y="105" font-size="12" font-weight="800" fill="#15803d">&lt; 90°</text>
+  <text x="110" y="125" font-size="13" font-weight="900" text-anchor="middle" fill="#166534">三個角都是銳角 ➔ 銳角三角形</text>
+</svg>`,
           options: [
             { text: "銳角三角形", isCorrect: true, reason: "正解！必須三個角都是銳角，才叫作銳角三角形！" },
             { text: "鈍角三角形", isCorrect: false, reason: "定義錯誤：有一個角是鈍角才叫鈍角三角形。" },
@@ -2644,7 +2833,20 @@
           title: "等腰三角形部位",
           page: 77,
           section: "第 3 大題",
-          prompt: "課本第 77 頁等腰三角形：兩條一樣長的邊叫作（　），兩腰所夾的角叫作（　）？",
+          prompt: "【📖 課本第 77 頁第 3 大題等腰三角形】兩條一樣長的邊叫作（　），兩腰所夾的角叫作（　）？",
+          diagramSvg: `<svg width="240" height="150" viewBox="0 0 240 150" style="max-width: 100%; height: auto;">
+  <polygon points="120,20 40,125 200,125" fill="#eff6ff" stroke="#2563eb" stroke-width="3" />
+  <!-- Equal tick marks on legs -->
+  <line x1="75" y1="70" x2="85" y2="75" stroke="#dc2626" stroke-width="2.5" />
+  <line x1="155" y1="75" x2="165" y2="70" stroke="#dc2626" stroke-width="2.5" />
+  <!-- Labels -->
+  <text x="50" y="65" font-size="14" font-weight="900" fill="#2563eb">腰 (等長)</text>
+  <text x="165" y="65" font-size="14" font-weight="900" fill="#2563eb">腰 (等長)</text>
+  <text x="120" y="42" font-size="14" font-weight="900" text-anchor="middle" fill="#dc2626">頂角</text>
+  <text x="60" y="120" font-size="12" font-weight="800" fill="#475569">底角</text>
+  <text x="160" y="120" font-size="12" font-weight="800" fill="#475569">底角</text>
+  <text x="120" y="142" font-size="13" font-weight="900" text-anchor="middle" fill="#475569">底邊</text>
+</svg>`,
           options: [
             { text: "腰、頂角", isCorrect: true, reason: "正解！兩等長邊為「腰」，兩腰夾角為「頂角」，底邊兩側為「底角」。" },
             { text: "底邊、底角", isCorrect: false, reason: "部位名稱混淆。" },
@@ -2658,7 +2860,22 @@
           title: "全等三角形對應",
           page: 77,
           section: "第 4 大題",
-          prompt: "課本第 77 頁全等三角形：頂點 A 的對應點是頂點（　），邊 EF 的對應邊是邊（　）？",
+          prompt: "【📖 課本第 77 頁第 4 大題全等三角形】△ABC 與 △DEF 旋轉疊合全等：頂點 A 的對應點是頂點（　），邊 EF 的對應邊是邊（　）？",
+          diagramSvg: `<svg width="280" height="130" viewBox="0 0 280 130" style="max-width: 100%; height: auto;">
+  <!-- Triangle ABC -->
+  <polygon points="60,20 20,105 110,105" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5" />
+  <text x="60" y="15" font-size="14" font-weight="900" text-anchor="middle" fill="#b91c1c">A</text>
+  <text x="10" y="115" font-size="14" font-weight="900" fill="#b91c1c">B</text>
+  <text x="115" y="115" font-size="14" font-weight="900" fill="#b91c1c">C</text>
+  <text x="60" y="125" font-size="13" font-weight="900" text-anchor="middle" fill="#b91c1c">△ABC</text>
+
+  <!-- Triangle DEF (congruent, rotated) -->
+  <polygon points="210,20 170,105 260,105" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5" />
+  <text x="210" y="15" font-size="14" font-weight="900" text-anchor="middle" fill="#1d4ed8">D</text>
+  <text x="160" y="115" font-size="14" font-weight="900" fill="#1d4ed8">E</text>
+  <text x="265" y="115" font-size="14" font-weight="900" fill="#1d4ed8">F</text>
+  <text x="215" y="125" font-size="13" font-weight="900" text-anchor="middle" fill="#1d4ed8">△DEF</text>
+</svg>`,
           options: [
             { text: "頂點 D、邊 BC", isCorrect: true, reason: "正解！對應頂點為 D，對應邊完全重合為 BC。" },
             { text: "頂點 E、邊 AB", isCorrect: false, reason: "旋轉疊合對應錯誤。" },
@@ -2672,7 +2889,16 @@
           title: "等邊三角形連連看",
           page: 76,
           section: "第 2 大題連連看",
-          prompt: "課本第 76 頁連連看：三個邊都等長的三角形叫作（　　　）？",
+          prompt: "【📖 課本第 76 頁第 2 大題連連看】三個邊都等長的三角形叫作（　　　）？",
+          diagramSvg: `<svg width="220" height="130" viewBox="0 0 220 130" style="max-width: 100%; height: auto;">
+  <polygon points="110,15 35,115 185,115" fill="#fef3c7" stroke="#d97706" stroke-width="3" />
+  <line x1="68" y1="62" x2="76" y2="68" stroke="#dc2626" stroke-width="2.5" />
+  <line x1="144" y1="68" x2="152" y2="62" stroke="#dc2626" stroke-width="2.5" />
+  <line x1="108" y1="110" x2="112" y2="120" stroke="#dc2626" stroke-width="2.5" />
+  <text x="110" y="42" font-size="12" font-weight="900" text-anchor="middle" fill="#b45309">60°</text>
+  <text x="56" y="108" font-size="12" font-weight="900" fill="#b45309">60°</text>
+  <text x="144" y="108" font-size="12" font-weight="900" fill="#b45309">60°</text>
+</svg>`,
           options: [
             { text: "正三角形", isCorrect: true, reason: "正解！三邊等長稱為正三角形（也叫等邊三角形）。" },
             { text: "等腰三角形", isCorrect: false, reason: "迷思：只有兩邊等長是等腰三角形。" },
@@ -2718,7 +2944,33 @@
           title: "國家公園大數比較",
           page: 78,
           section: "第 1 大題第 (1) 小題",
-          prompt: "臺灣國家公園遊客人數表：墾丁（4003810）和太魯閣（4828607），哪個國家公園的遊客人數比較多？",
+          prompt: "【📖 課本第 78 頁第 1-(1) 題遊客人數表】請對照課本或下方數據表：墾丁和太魯閣，哪個國家公園的遊客人數比較多？",
+          tableHtml: `<div style="background: white; border: 2px solid #cbd5e1; border-radius: 10px; padding: 6px; margin: 6px 0; width: 100%; box-sizing: border-box; overflow-x: auto;">
+  <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 13.5px; font-weight: 800;">
+    <thead>
+      <tr style="background: #f1f5f9; color: #334155;">
+        <th style="padding: 4px; border: 1px solid #cbd5e1;">國家公園</th>
+        <th style="padding: 4px; border: 1px solid #cbd5e1; color: #dc2626;">太魯閣</th>
+        <th style="padding: 4px; border: 1px solid #cbd5e1;">陽明山</th>
+        <th style="padding: 4px; border: 1px solid #cbd5e1; color: #2563eb;">墾丁</th>
+        <th style="padding: 4px; border: 1px solid #cbd5e1;">金門</th>
+        <th style="padding: 4px; border: 1px solid #cbd5e1;">雪霸</th>
+        <th style="padding: 4px; border: 1px solid #cbd5e1;">玉山</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 4px; border: 1px solid #cbd5e1; background: #f8fafc; font-weight: 900;">遊客人數</td>
+        <td style="padding: 4px; border: 1px solid #cbd5e1; color: #dc2626; font-weight: 900;">4828607</td>
+        <td style="padding: 4px; border: 1px solid #cbd5e1;">4325068</td>
+        <td style="padding: 4px; border: 1px solid #cbd5e1; color: #2563eb; font-weight: 900;">4003810</td>
+        <td style="padding: 4px; border: 1px solid #cbd5e1;">1532087</td>
+        <td style="padding: 4px; border: 1px solid #cbd5e1;">1245012</td>
+        <td style="padding: 4px; border: 1px solid #cbd5e1;">103121</td>
+      </tr>
+    </tbody>
+  </table>
+</div>`,
           options: [
             { text: "太魯閣 國家公園", isCorrect: true, reason: "正解！太魯閣 4828607 (482萬餘) ＞ 墾丁 4003810 (400萬餘)！" },
             { text: "墾丁 國家公園", isCorrect: false, reason: "比大小錯誤：400 萬小於 482 萬。" },
@@ -2732,7 +2984,33 @@
           title: "遊客最多國家公園",
           page: 78,
           section: "第 1 大題第 (2) 小題",
-          prompt: "看課本第 78 頁遊客人數表，哪個國家公園的遊客人數最多？",
+          prompt: "【📖 課本第 78 頁第 1-(2) 題遊客人數表】請對照課本或下方數據表：哪個國家公園的遊客人數最多？",
+          tableHtml: `<div style="background: white; border: 2px solid #cbd5e1; border-radius: 10px; padding: 6px; margin: 6px 0; width: 100%; box-sizing: border-box; overflow-x: auto;">
+  <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 13.5px; font-weight: 800;">
+    <thead>
+      <tr style="background: #f1f5f9; color: #334155;">
+        <th style="padding: 4px; border: 1px solid #cbd5e1;">國家公園</th>
+        <th style="padding: 4px; border: 1px solid #cbd5e1; color: #dc2626;">太魯閣</th>
+        <th style="padding: 4px; border: 1px solid #cbd5e1;">陽明山</th>
+        <th style="padding: 4px; border: 1px solid #cbd5e1; color: #2563eb;">墾丁</th>
+        <th style="padding: 4px; border: 1px solid #cbd5e1;">金門</th>
+        <th style="padding: 4px; border: 1px solid #cbd5e1;">雪霸</th>
+        <th style="padding: 4px; border: 1px solid #cbd5e1;">玉山</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="padding: 4px; border: 1px solid #cbd5e1; background: #f8fafc; font-weight: 900;">遊客人數</td>
+        <td style="padding: 4px; border: 1px solid #cbd5e1; color: #dc2626; font-weight: 900;">4828607</td>
+        <td style="padding: 4px; border: 1px solid #cbd5e1;">4325068</td>
+        <td style="padding: 4px; border: 1px solid #cbd5e1; color: #2563eb; font-weight: 900;">4003810</td>
+        <td style="padding: 4px; border: 1px solid #cbd5e1;">1532087</td>
+        <td style="padding: 4px; border: 1px solid #cbd5e1;">1245012</td>
+        <td style="padding: 4px; border: 1px solid #cbd5e1;">103121</td>
+      </tr>
+    </tbody>
+  </table>
+</div>`,
           options: [
             { text: "陽明山 國家公園", isCorrect: true, reason: "正解！陽明山遊客人數高達 5288852 人，為五座中最多！" },
             { text: "太魯閣 國家公園", isCorrect: false, reason: "太魯閣是 4828607 人，少於陽明山的 528 萬人。" },
@@ -3570,13 +3848,15 @@
       // 作答者小白板題 (完全不揭露解答，避免抄寫)
       document.getElementById("penaltyAnswererTitle").textContent = `👤 作答者【${currentPlayer.name}】小白板題`;
       document.getElementById("penaltyAnswererPage").textContent = `📖 南一課本 第 ${pQ1.page} 頁 ${pQ1.section}`;
-      document.getElementById("penaltyAnswererPrompt").textContent = pQ1.prompt;
+      let p1Diag = pQ1.diagramSvg ? `<div class="question-diagram-card">${pQ1.diagramSvg}</div>` : (pQ1.tableHtml || "");
+      document.getElementById("penaltyAnswererPrompt").innerHTML = `<div>${pQ1.prompt}</div>${p1Diag}`;
       document.getElementById("penaltyReviewerLabel1").textContent = `🔍 請裁判【${refereePlayer.name}】翻書審查此題：`;
 
       // 裁判監督小白板題 (完全不揭露解答，避免抄寫)
-      document.getElementById("penaltyRefereeTitle").textContent = `🔍 裁判監督【${refereePlayer.name}】小白板題`;
+      document.getElementById("penaltyRefereeTitle").textContent = `🔍 裁判【${refereePlayer.name}】小白板題`;
       document.getElementById("penaltyRefereePage").textContent = `📖 南一課本 第 ${pQ2.page} 頁 ${pQ2.section}`;
-      document.getElementById("penaltyRefereePrompt").textContent = pQ2.prompt;
+      let p2Diag = pQ2.diagramSvg ? `<div class="question-diagram-card">${pQ2.diagramSvg}</div>` : (pQ2.tableHtml || "");
+      document.getElementById("penaltyRefereePrompt").innerHTML = `<div>${pQ2.prompt}</div>${p2Diag}`;
       document.getElementById("penaltyReviewerLabel2").textContent = `👤 請作答者【${currentPlayer.name}】翻書審查此題：`;
 
       // 重設互審選擇按鈕樣式
@@ -3653,9 +3933,30 @@
         chkEl.innerHTML = `<span style="background: #fee2e2; color: #991b1b; padding: 2px 8px; border-radius: 6px; font-weight: 900;">🔴 裁判監督：${otherPlayer.name}</span> — 翻到指定頁準備審查`;
       }
 
+      let diagramBoxHtml = "";
+      if (q.diagramSvg) {
+        diagramBoxHtml = `
+          <div class="question-diagram-card">
+            <div class="diagram-tag">📐 幾何圖形對照（與課本完全對齊）</div>
+            ${q.diagramSvg}
+          </div>
+        `;
+      } else if (q.tableHtml) {
+        diagramBoxHtml = `
+          <div class="question-diagram-card">
+            <div class="diagram-tag">📊 課本數據表對照（第 ${q.page} 頁）</div>
+            ${q.tableHtml}
+          </div>
+        `;
+      }
+
       document.getElementById("qProblemText").innerHTML = `
-        <div style="font-size: 16px; color: #64748b; margin-bottom: 6px;">課本原題（作答者請在實體小白板列式）：</div>
-        <div>${q.prompt}</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <span style="font-size: 15px; font-weight: 800; color: #475569;">課本出處：第 ${q.page} 頁 ${q.section}</span>
+          ${q.diagramSvg || q.tableHtml ? '<span class="diagram-pill-badge">🖼️ 課本圖表題</span>' : ''}
+        </div>
+        <div style="font-size: 24px; line-height: 1.5; font-weight: 900; color: #0f172a;">${q.prompt}</div>
+        ${diagramBoxHtml}
       `;
 
       // 渲染選項 (打亂順序，防止死記)
@@ -3922,12 +4223,10 @@
         const feedback = document.getElementById("feedbackBox");
         feedback.innerHTML += `<div style="margin-top: 8px; font-weight: 800; font-size: 18px; color: #475569;">📍 此格已經是【${ownerName}】的領地，不可再佔領！</div>`;
         landGroup.classList.add("hidden");
-        nextBtn.textContent = "➡️ 換下一位玩家擲骰";
-        nextBtn.classList.remove("hidden");
+        showNextTurnButton();
       } else {
         landGroup.classList.add("hidden");
-        nextBtn.textContent = "➡️ 換下一位玩家擲骰";
-        nextBtn.classList.remove("hidden");
+        showNextTurnButton();
       }
     }
 
@@ -4016,7 +4315,11 @@
       const isP1 = (gameState.currentTurn === 1);
 
       if (isP1) {
-        if (announcer) announcer.className = "turn-announcer turn-p1";
+        if (announcer) {
+          announcer.className = "turn-announcer turn-p1";
+          announcer.style.background = "linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)";
+          announcer.style.boxShadow = "0 3px 12px rgba(239, 68, 68, 0.45)";
+        }
         if (avatarImg) {
           avatarImg.src = "assets/avatar_p1.jpg";
           avatarImg.alt = "紅隊頭像";
@@ -4030,7 +4333,11 @@
         }
         showTurnSwitchToast(gameState.p1, true);
       } else {
-        if (announcer) announcer.className = "turn-announcer turn-p2";
+        if (announcer) {
+          announcer.className = "turn-announcer turn-p2";
+          announcer.style.background = "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)";
+          announcer.style.boxShadow = "0 3px 12px rgba(37, 99, 235, 0.45)";
+        }
         if (avatarImg) {
           avatarImg.src = "assets/avatar_p2.jpg";
           avatarImg.alt = "藍隊頭像";
