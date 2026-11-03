@@ -43,3 +43,9 @@
 ## 🚀 部署與存取連結
 - **GitHub Repository**: `https://github.com/asc103138/115-g4-math-monopoly`
 - **GitHub Pages 線上版**: `https://asc103138.github.io/115-g4-math-monopoly/`
+
+
+## 🔄 2026-11-03 更新記錄
+- **全螢幕比例失衡修正**：側邊欄精簡為 210~250px，棋盤以原生 `aspect-ratio: 16 / 9` 居中貼合，徹底解決大螢幕拉伸成扁方塊問題。
+- **平板骰子防遮擋與層級保護**：骰子設為 `z-index: 50`，中欄寬度加寬至 1.35fr，消除周遭文字 nowrap 溢出遮擋觸控之問題。
+- **換隊提醒色彩修復**：修正換隊廣播條 DOM ID 錯位，新增全螢幕換隊 Toast 橫幅與動態紅藍隊色彩按鈕。

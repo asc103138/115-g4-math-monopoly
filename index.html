@@ -143,23 +143,30 @@
       transform: translateY(-1px);
     }
 
-    /* 遊戲主舞台 - 16:9 比例滿版 */
+    /* 遊戲主舞台 - 寬螢幕黃金比例自適應（為棋盤預留充沛空間，全螢幕與平板均不失衡） */
     main {
       width: 100%;
       max-width: 100%;
       flex: 1;
       display: grid;
-      grid-template-columns: minmax(300px, 340px) 1fr minmax(300px, 340px);
-      gap: 12px;
+      grid-template-columns: minmax(210px, 250px) 1fr minmax(210px, 250px);
+      gap: clamp(8px, 1vw, 12px);
       align-items: stretch;
       min-height: 0;
       box-sizing: border-box;
     }
 
-    @media (max-width: 1200px) {
+    @media (max-width: 1280px) {
       main {
-        grid-template-columns: 280px 1fr 280px;
-        gap: 10px;
+        grid-template-columns: minmax(180px, 215px) 1fr minmax(180px, 215px);
+        gap: 8px;
+      }
+    }
+
+    @media (max-width: 950px) {
+      main {
+        grid-template-columns: 160px 1fr 160px;
+        gap: 6px;
       }
     }
 
@@ -279,18 +286,17 @@
     .chip-p1 { background: var(--p1-color); }
     .chip-p2 { background: var(--p2-color); }
 
-    /* 中央環形大富翁棋盤 - 讓整個中央都是棋盤，無任何上下多餘留白 */
+    /* 中央環形大富翁棋盤 - 16:9 黃金比例，全螢幕與平板嚴格自適應不變形 */
     .board-container {
       background: white;
       border-radius: 18px;
-      padding: 6px;
+      padding: clamp(4px, 0.6vw, 8px);
       box-shadow: var(--shadow);
       position: relative;
-      border: 3.5px solid #cbd5e1;
+      border: 3px solid #cbd5e1;
       display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      justify-content: stretch;
+      align-items: center;
+      justify-content: center;
       width: 100%;
       height: 100%;
       box-sizing: border-box;
@@ -301,11 +307,13 @@
       display: grid;
       grid-template-columns: repeat(7, 1fr);
       grid-template-rows: repeat(5, 1fr);
-      gap: 6px;
-      width: 100%;
-      height: 100%;
+      gap: clamp(3px, 0.45vw, 6px);
+      aspect-ratio: 16 / 9;
       max-width: 100%;
       max-height: 100%;
+      width: auto;
+      height: auto;
+      margin: auto;
       position: relative;
       box-sizing: border-box;
     }
@@ -527,18 +535,18 @@
       width: 100%;
       flex: 1;
       display: grid;
-      grid-template-columns: 1.1fr 1fr 1.1fr;
-      gap: 8px;
+      grid-template-columns: 1fr 1.35fr 1fr;
+      gap: clamp(4px, 0.6vw, 8px);
       align-items: stretch;
       min-height: 0;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
 
     .center-panel-box {
       background: white;
       border: 1.5px solid #e2e8f0;
       border-radius: 12px;
-      padding: 6px;
+      padding: clamp(3px, 0.5vw, 6px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -546,6 +554,8 @@
       box-shadow: 0 1px 4px rgba(0,0,0,0.03);
       box-sizing: border-box;
       overflow: hidden;
+      position: relative;
+      min-width: 0;
     }
 
     .center-box-title {
@@ -614,25 +624,33 @@
       object-fit: cover;
     }
 
-    /* 骰子控制中欄 */
+    /* 骰子控制中欄 - 優先保證觸控操作與最高層級，防止文字覆蓋按不到 */
     .center-dice-box {
       background: linear-gradient(135deg, #ffffff 0%, #fefce8 100%);
       border-color: #fde047;
+      position: relative;
+      overflow: hidden;
+      z-index: 10;
     }
 
     .dice-btn {
-      width: clamp(74px, 6vw, 92px);
-      height: clamp(74px, 6vw, 92px);
+      width: clamp(66px, 5.5vw, 88px);
+      height: clamp(66px, 5.5vw, 88px);
       background: white;
-      border-radius: 20px;
-      border: 4px solid #cbd5e1;
+      border-radius: 18px;
+      border: 3.5px solid #cbd5e1;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: clamp(48px, 4vw, 62px);
+      font-size: clamp(42px, 3.8vw, 56px);
       cursor: pointer;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.14), inset 0 -4px 0 #cbd5e1;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.12), inset 0 -3px 0 #cbd5e1;
       transition: all 0.15s;
+      position: relative;
+      z-index: 50;
+      touch-action: manipulation;
+      pointer-events: auto;
+      margin: 2px auto;
     }
 
     .dice-btn:hover:not(:disabled) {
@@ -646,56 +664,74 @@
     }
 
     .dice-history-pill {
-      font-size: 17px;
+      font-size: clamp(12px, 1.0vw, 15px);
       font-weight: 900;
       color: #92400e;
       background: #fef3c7;
       border: 1.5px solid #fde68a;
-      padding: 3px 12px;
+      padding: 2px 10px;
       border-radius: 999px;
-      margin-top: 2px;
+      margin-top: 1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      pointer-events: none;
     }
 
     .action-hint {
       margin-top: 2px;
-      font-size: 19px;
-      font-weight: 800;
+      font-size: clamp(13px, 1.05vw, 16px);
+      font-weight: 900;
       color: #475569;
-    }
-
-    .rule-quick-tag {
-      font-size: 15px;
-      font-weight: 800;
-      color: #0369a1;
-      background: #e0f2fe;
-      padding: 2px 8px;
-      border-radius: 4px;
-      margin-top: 2px;
+      line-height: 1.2;
+      pointer-events: none;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    /* 課本任務情報右欄 */
+    .rule-quick-tag {
+      font-size: clamp(10.5px, 0.85vw, 13px);
+      font-weight: 800;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-top: 1px;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    /* 課本任務情報右欄 - 嚴格限制文字溢出，保障平板空間 */
     .book-radar-list {
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 3px;
       justify-content: space-around;
       height: 100%;
+      overflow: hidden;
     }
 
     .radar-item {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       background: #f8fafc;
       border: 1px solid #e2e8f0;
       border-radius: 6px;
-      padding: 2px 6px;
+      padding: 2px 4px;
+      min-width: 0;
+      overflow: hidden;
     }
 
     .radar-icon {
-      font-size: 18px;
+      font-size: clamp(14px, 1.1vw, 17px);
       flex-shrink: 0;
     }
 
@@ -704,15 +740,69 @@
       flex-direction: column;
       text-align: left;
       line-height: 1.15;
-      font-size: 16px;
+      font-size: clamp(11px, 0.95vw, 14px);
       font-weight: 800;
       color: #1e293b;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .radar-text b {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .radar-text small {
       color: #64748b;
-      font-size: 13.5px;
+      font-size: clamp(9.5px, 0.8vw, 12px);
       font-weight: 700;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* 換隊提醒浮動橫幅 (紅隊/藍隊清晰分明) */
+    .turn-switch-toast {
+      position: fixed;
+      top: 66px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      padding: 8px 24px;
+      border-radius: 999px;
+      font-size: clamp(18px, 1.6vw, 24px);
+      font-weight: 900;
+      color: white;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      opacity: 0;
+      transform: translateX(-50%) translateY(-20px);
+    }
+    .turn-switch-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .turn-switch-toast.toast-p1 {
+      background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+      border: 3px solid #fecaca;
+      box-shadow: 0 8px 24px rgba(239, 68, 68, 0.5);
+    }
+    .turn-switch-toast.toast-p2 {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      border: 3px solid #bfdbfe;
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.5);
+    }
+    .turn-switch-toast-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid white;
     }
 
     /* 底部賽程進度里程碑 */
@@ -1293,6 +1383,8 @@
       <button class="icon-btn" id="settleNowBtn" style="color: #b91c1c;">🏳️ 提早結算</button>
     </div>
   </header>
+  <!-- 全螢幕換隊過場提醒橫幅 -->
+  <div id="turnSwitchToast" class="turn-switch-toast"></div>
 
   <!-- 遊戲主區塊 -->
   <main>
@@ -1589,9 +1681,9 @@
         <div class="book-target" id="bookTargetDisplay">
           📖 請翻開數學課本 第 18 頁 第 2-(4) 題
         </div>
-        <div class="role-dispatch">
-          <span id="roleAnswerer">👤 作答者：紅隊 (1 號) — 請在「小白板」計算答案</span>
-          <span id="roleChecker">🔍 裁判監督：藍隊 (2 號) — 翻到指定頁準備審查</span>
+        <div class="role-dispatch" id="roleDispatchBox">
+          <span id="roleAnswerer" style="padding: 2px 10px; border-radius: 8px;">👤 作答者：紅隊 — 請在「小白板」計算答案</span>
+          <span id="roleChecker" style="padding: 2px 10px; border-radius: 8px;">🔍 裁判監督：藍隊 — 翻到指定頁準備審查</span>
         </div>
       </div>
 
@@ -2019,6 +2111,10 @@
       heartbeat() {
         this.playTone(120, 'sine', 0.1, 0, 0.35);
         this.playTone(90, 'sine', 0.15, 120, 0.25);
+      }
+
+      countdown() {
+        this.playTone(880, 'sine', 0.05, 0, 0.15);
       }
 
       fanfare() {
@@ -2965,9 +3061,7 @@
       document.getElementById("buyLandBtn").addEventListener("click", handleBuyLand);
       document.getElementById("skipBuyBtn").addEventListener("click", () => {
         document.getElementById("landActionGroup").classList.add("hidden");
-        const nextBtn = document.getElementById("nextTurnBtn");
-        nextBtn.textContent = "➡️ 換下一位玩家擲骰";
-        nextBtn.classList.remove("hidden");
+        showNextTurnButton();
       });
 
       // 互審選擇按鈕：裁判審查作答者
@@ -3390,12 +3484,34 @@
       const currentPlayer = gameState.currentTurn === 1 ? gameState.p1 : gameState.p2;
       const otherPlayer = gameState.currentTurn === 1 ? gameState.p2 : gameState.p1;
 
-      // 視窗標題與第幾輪提示
+      // 視窗標題與第幾輪提示（依隊伍色彩動態分明）
       document.getElementById("qModalHeader").textContent = `📘 ${q.unit}：${q.title} 翻書挑戰（隨機換題）`;
-      document.getElementById("qLapBadge").textContent = `${currentPlayer.name}・第 ${currentPlayer.laps} / 4 輪`;
+      const lapBadge = document.getElementById("qLapBadge");
+      lapBadge.textContent = `${currentPlayer.name}・第 ${currentPlayer.laps} / 4 輪`;
+
+      const isCurrentP1 = (gameState.currentTurn === 1);
+      if (isCurrentP1) {
+        lapBadge.style.background = "#fee2e2";
+        lapBadge.style.color = "#b91c1c";
+        lapBadge.style.border = "2px solid #ef4444";
+      } else {
+        lapBadge.style.background = "#dbeafe";
+        lapBadge.style.color = "#1d4ed8";
+        lapBadge.style.border = "2px solid #3b82f6";
+      }
+
       document.getElementById("bookTargetDisplay").textContent = `📖 請翻開數學課本 第 ${q.page} 頁 ${q.section}`;
-      document.getElementById("roleAnswerer").textContent = `👤 作答者：${currentPlayer.name} — 請在「小白板」計算答案`;
-      document.getElementById("roleChecker").textContent = `🔍 裁判監督：${otherPlayer.name} — 翻到指定頁準備審查`;
+
+      const ansEl = document.getElementById("roleAnswerer");
+      const chkEl = document.getElementById("roleChecker");
+
+      if (isCurrentP1) {
+        ansEl.innerHTML = `<span style="background: #fee2e2; color: #991b1b; padding: 2px 8px; border-radius: 6px; font-weight: 900;">🔴 作答者：${currentPlayer.name}</span> — 請在「小白板」計算答案`;
+        chkEl.innerHTML = `<span style="background: #dbeafe; color: #1e40af; padding: 2px 8px; border-radius: 6px; font-weight: 900;">🔵 裁判監督：${otherPlayer.name}</span> — 翻到指定頁準備審查`;
+      } else {
+        ansEl.innerHTML = `<span style="background: #dbeafe; color: #1e40af; padding: 2px 8px; border-radius: 6px; font-weight: 900;">🔵 作答者：${currentPlayer.name}</span> — 請在「小白板」計算答案`;
+        chkEl.innerHTML = `<span style="background: #fee2e2; color: #991b1b; padding: 2px 8px; border-radius: 6px; font-weight: 900;">🔴 裁判監督：${otherPlayer.name}</span> — 翻到指定頁準備審查`;
+      }
 
       document.getElementById("qProblemText").innerHTML = `
         <div style="font-size: 16px; color: #64748b; margin-bottom: 6px;">課本原題（作答者請在實體小白板列式）：</div>
@@ -3474,8 +3590,7 @@
       `;
       feedback.classList.remove("hidden");
 
-      document.getElementById("nextTurnBtn").textContent = "➡️ 換下一位玩家擲骰";
-      document.getElementById("nextTurnBtn").classList.remove("hidden");
+      showNextTurnButton();
     }
 
     // 步驟 1：作答者在小白板算完並點選選項
@@ -3720,39 +3835,88 @@
       updatePlayerStatsUI();
       flashNotice(`🎊 ${buyer.name} 成功插旗佔領【${tile.name}】！`);
 
-      const nextBtn = document.getElementById("nextTurnBtn");
-      nextBtn.textContent = "➡️ 換下一位玩家擲骰";
-      nextBtn.classList.remove("hidden");
+      showNextTurnButton();
     }
 
-    // 切換回合
+    // 切換回合 (包含紅藍分明之過場通知)
     function switchTurn() {
       gameState.currentTurn = gameState.currentTurn === 1 ? 2 : 1;
       updateTurnUI();
     }
 
+    // 換隊提醒浮動橫幅
+    let turnToastTimer = null;
+    function showTurnSwitchToast(player, isRed) {
+      const toast = document.getElementById("turnSwitchToast");
+      if (!toast) return;
+      if (turnToastTimer) clearTimeout(turnToastTimer);
+
+      const avatar = isRed ? "assets/avatar_p1.jpg" : "assets/avatar_p2.jpg";
+      const teamText = isRed ? "🔴 輪到【紅隊】" : "🔵 輪到【藍隊】";
+
+      toast.className = `turn-switch-toast ${isRed ? "toast-p1" : "toast-p2"} show`;
+      toast.innerHTML = `
+        <img src="${avatar}" class="turn-switch-toast-avatar" alt="${player.name}" />
+        <span>${teamText} (${player.seat ? player.seat + "號" : player.name}) 擲骰推進！</span>
+      `;
+
+      turnToastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 1800);
+    }
+
     function updateTurnUI() {
       const announcer = document.getElementById("turnAnnouncer");
-      const avatarImg = document.getElementById("turnAvatarImg");
-      const textSpan = document.getElementById("turnAnnouncerText");
+      const avatarImg = document.getElementById("turnAvatarBadge");
+      const textSpan = document.getElementById("turnText");
       const p1Panel = document.getElementById("p1Panel");
       const p2Panel = document.getElementById("p2Panel");
+      const actionHint = document.getElementById("actionHint");
 
-      if (gameState.currentTurn === 1) {
+      const isP1 = (gameState.currentTurn === 1);
+
+      if (isP1) {
         announcer.className = "turn-announcer turn-p1";
         if (avatarImg) avatarImg.src = "assets/avatar_p1.jpg";
-        if (textSpan) textSpan.textContent = `輪到 ${gameState.p1.name} 擲骰子！`;
+        if (textSpan) textSpan.textContent = `輪到 ${gameState.p1.name} 擲骰！`;
         p1Panel.className = "player-panel active-p1";
         p2Panel.className = "player-panel";
+        if (actionHint) {
+          actionHint.innerHTML = `<span style="color: #b91c1c; font-weight: 900;">🔴 輪到【紅隊】！請點擊 3D 骰子向前衝刺！</span>`;
+        }
+        showTurnSwitchToast(gameState.p1, true);
       } else {
         announcer.className = "turn-announcer turn-p2";
         if (avatarImg) avatarImg.src = "assets/avatar_p2.jpg";
-        if (textSpan) textSpan.textContent = `輪到 ${gameState.p2.name} 擲骰子！`;
+        if (textSpan) textSpan.textContent = `輪到 ${gameState.p2.name} 擲骰！`;
         p1Panel.className = "player-panel";
         p2Panel.className = "player-panel active-p2";
+        if (actionHint) {
+          actionHint.innerHTML = `<span style="color: #1d4ed8; font-weight: 900;">🔵 輪到【藍隊】！請點擊 3D 骰子向前衝刺！</span>`;
+        }
+        showTurnSwitchToast(gameState.p2, false);
       }
+    }
 
-      document.getElementById("actionHint").textContent = "請點擊骰子向前移動！";
+    // 換隊按鈕動態上色助手（紅隊換藍隊時顯示藍隊色彩，藍隊換紅隊時顯示紅隊色彩）
+    function showNextTurnButton() {
+      const nextBtn = document.getElementById("nextTurnBtn");
+      if (!nextBtn) return;
+      const nextIsP2 = (gameState.currentTurn === 1);
+      const nextPlayer = nextIsP2 ? gameState.p2 : gameState.p1;
+
+      if (nextIsP2) {
+        nextBtn.innerHTML = `➡️ 換【🔵 ${nextPlayer.name}】擲骰推進`;
+        nextBtn.style.background = "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)";
+        nextBtn.style.border = "2px solid #93c5fd";
+        nextBtn.style.color = "white";
+      } else {
+        nextBtn.innerHTML = `➡️ 換【🔴 ${nextPlayer.name}】擲骰推進`;
+        nextBtn.style.background = "linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)";
+        nextBtn.style.border = "2px solid #fca5a5";
+        nextBtn.style.color = "white";
+      }
+      nextBtn.classList.remove("hidden");
     }
 
     function updatePlayerStatsUI() {
